@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f8f5;
+  --foreground: #18211b;
+  --surface: #ffffff;
+  --primary: #17643b;
+  --primary-hover: #0f4f2d;
+  --primary-foreground: #ffffff;
+  --secondary: #e8eee9;
+  --secondary-foreground: #213b2b;
+  --muted: #637068;
+  --border: #d7ded9;
+  --destructive: #b42318;
+  --success: #137a42;
+  --warning: #9a6700;
+  --focus: #2869d8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-focus: var(--focus);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+button,
+a,
+input {
+  transition-duration: 150ms;
+  transition-property: background-color, border-color, color, box-shadow;
+}
