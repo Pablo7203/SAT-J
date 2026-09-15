@@ -48,15 +48,15 @@ export default async function Page({
       <div className="grid gap-3 sm:grid-cols-3">
         <Card>
           <strong>{formatQuantity(item.quantity_on_hand, u?.symbol)}</strong>
-          <p className="text-sm text-muted">Current balance</p>
+          <p className="text-sm text-muted-foreground">Current balance</p>
         </Card>
         <Card>
           <strong>{formatQuantity(item.minimum_stock_level, u?.symbol)}</strong>
-          <p className="text-sm text-muted">Minimum stock</p>
+          <p className="text-sm text-muted-foreground">Minimum stock</p>
         </Card>
         <Card>
           <strong>{status}</strong>
-          <p className="text-sm text-muted">Stock status</p>
+          <p className="text-sm text-muted-foreground">Stock status</p>
         </Card>
       </div>
       {context.permissions.includes("inventory.settings.manage") ? (

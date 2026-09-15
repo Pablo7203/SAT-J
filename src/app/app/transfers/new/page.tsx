@@ -62,7 +62,7 @@ export default async function NewTransferPage() {
             </p>
           ))}
           {!inventory?.length ? (
-            <p className="text-sm text-muted">
+            <p className="text-sm text-muted-foreground">
               No positive stock is visible in your authorized source branches.
             </p>
           ) : null}

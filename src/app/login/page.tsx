@@ -17,7 +17,7 @@ export default function LoginPage() {
         </Link>
         <Card>
           <h1 className="text-2xl font-bold">Staff login</h1>
-          <p className="mt-2 text-sm leading-6 text-muted">
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
             Use your SAT-J Ent account. Full access controls will be introduced
             in Phase 1.
           </p>

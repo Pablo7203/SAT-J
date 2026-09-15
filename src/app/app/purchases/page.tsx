@@ -138,7 +138,7 @@ export default async function Page({
         ))}
         {!data?.length ? <Card>No purchases found.</Card> : null}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Showing {data?.length ?? 0} of {count ?? 0}.{" "}
         {page > 1 ? <Link href={`?page=${page - 1}`}>Previous</Link> : null}{" "}
         {(count ?? 0) > page * size ? (

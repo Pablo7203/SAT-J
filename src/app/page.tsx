@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  Building2,
   CheckCircle2,
   MessageCircle,
   Ruler,
@@ -66,42 +65,42 @@ export default async function HomePage() {
       />
       <PublicHeader />
       <main>
-        <section className="relative overflow-hidden bg-[#14251b] text-white">
-          <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(120deg,transparent_45%,#d7b56d_45%,#d7b56d_46%,transparent_46%)] [background-size:120px_120px]" />
-          <div className="relative mx-auto grid min-h-[680px] max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8">
+        <section className="overflow-hidden bg-slate-50">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-14 lg:grid-cols-[.94fr_1.06fr] lg:px-8 lg:py-20">
             <div>
-              <p className="text-sm font-bold tracking-[.2em] text-[#d7b56d] uppercase">
+              <p className="text-sm font-semibold tracking-wide text-primary">
                 {config.hero_eyebrow}
               </p>
-              <h1 className="mt-5 max-w-3xl text-5xl leading-[1.02] font-black tracking-[-.04em] sm:text-7xl">
+              <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[.98] tracking-[-.055em] text-[#0f172a] text-balance sm:text-6xl xl:text-7xl">
                 {config.hero_title}
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-stone-300">
+              <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
                 {config.hero_description}
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
-                  className="rounded-full bg-white px-6 py-3.5 font-bold text-[#14251b]"
+                  className="rounded-lg bg-primary px-6 py-3.5 font-semibold text-white transition-[background-color,box-shadow,transform] duration-200 hover:bg-primary-hover hover:shadow-[0_10px_24px_rgb(37_99_235_/_0.2)] active:translate-y-px"
                   href="/products"
                 >
                   Browse products
                 </Link>
                 <Link
-                  className="rounded-full border border-white/40 px-6 py-3.5 font-bold"
+                  className="rounded-lg border border-[#0f172a]/20 px-6 py-3.5 font-semibold text-[#0f172a] transition-colors hover:border-[#0f172a]/45 hover:bg-white/70"
                   href="/quote"
                 >
                   Request a quote
                 </Link>
               </div>
             </div>
-            <div className="relative hidden aspect-square lg:block">
-              <div className="absolute inset-10 rotate-6 rounded-[3rem] border border-white/20 bg-white/5" />
-              <div className="absolute inset-24 -rotate-6 rounded-[3rem] bg-[#d7b56d] p-12 text-[#14251b]">
-                <Building2 size={70} />
-                <p className="absolute bottom-12 text-2xl font-black">
-                  Materials selected for real projects.
-                </p>
-              </div>
+            <div className="relative min-h-[390px] overflow-hidden rounded-[2rem] shadow-[0_22px_55px_rgb(15_23_42_/_0.18)] lg:min-h-[520px]">
+              <Image
+                alt="A timber door, stone tiles and sanitaryware in a completed home"
+                className="object-cover"
+                fill
+                preload
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                src="/images/satj-hero-materials.png"
+              />
             </div>
           </div>
         </section>
@@ -152,7 +151,7 @@ export default async function HomePage() {
               ))}
             </div>
             {!catalogue.items.length ? (
-              <p className="mt-10 rounded-2xl bg-secondary p-8 text-muted">
+              <p className="mt-10 rounded-2xl bg-secondary p-8 text-muted-foreground">
                 Public products will appear here once approved by the SAT-J Ent
                 team.
               </p>
@@ -183,11 +182,11 @@ export default async function HomePage() {
             >
               <Icon className="text-primary" />
               <h2 className="mt-5 text-xl font-black">{String(title)}</h2>
-              <p className="mt-3 leading-7 text-muted">{String(copy)}</p>
+              <p className="mt-3 leading-7 text-muted-foreground">{String(copy)}</p>
             </div>
           ))}
         </section>
-        <section className="bg-[#d7b56d] px-5 py-20 text-[#14251b]">
+        <section className="bg-[#eaf1ff] px-5 py-20 text-[#0f172a]">
           <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
             <div>
               <p className="font-bold uppercase">
@@ -199,14 +198,14 @@ export default async function HomePage() {
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
               <Link
-                className="rounded-full bg-[#14251b] px-6 py-3 font-bold text-white"
+                className="rounded-lg bg-primary px-6 py-3 font-bold text-white transition-colors hover:bg-primary-hover"
                 href="/quote"
               >
                 Request quote
               </Link>
               {whatsapp ? (
                 <a
-                  className="rounded-full border border-[#14251b] px-6 py-3 font-bold"
+                  className="rounded-lg border border-primary px-6 py-3 font-bold text-primary transition-colors hover:bg-white/70"
                   href={whatsapp}
                   rel="noreferrer"
                   target="_blank"
@@ -224,7 +223,7 @@ export default async function HomePage() {
               {branches.map((b) => (
                 <article className="rounded-3xl border bg-white p-6" key={b.id}>
                   <h3 className="text-xl font-black">{b.name}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted">
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
                     {b.address}
                   </p>
                   <a

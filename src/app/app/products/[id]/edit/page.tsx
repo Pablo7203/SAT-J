@@ -147,7 +147,7 @@ export default async function EditProductPage({
       </Card>
       <Card>
         <h2 className="font-bold">Lifecycle</h2>
-        <p className="my-3 text-sm text-muted">
+        <p className="my-3 text-sm text-muted-foreground">
           Activation is rejected unless the category and unit are active and
           every active variant satisfies required attributes.
         </p>
@@ -304,7 +304,7 @@ export default async function EditProductPage({
             </div>
           </form>
         ) : (
-          <p className="text-sm text-muted">
+          <p className="text-sm text-muted-foreground">
             Return the product to draft before adding a variant, so required
             attributes can be completed before activation.
           </p>

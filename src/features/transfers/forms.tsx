@@ -111,7 +111,7 @@ export function TransferForm({
           className="mt-1 w-full rounded-lg border bg-surface p-3"
         />
       </Label>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Drafts and requests have no inventory effect. Source stock changes only
         at dispatch; destination stock changes only at receipt.
       </p>

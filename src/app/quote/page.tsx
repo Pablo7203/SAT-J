@@ -19,7 +19,7 @@ export default async function QuotePage() {
         <section>
           <p className="font-bold text-primary uppercase">Project enquiry</p>
           <h1 className="mt-2 text-5xl font-black">Request a quotation.</h1>
-          <p className="mt-5 text-lg leading-8 text-muted">
+          <p className="mt-5 text-lg leading-8 text-muted-foreground">
             Share the materials, quantities, or project details you have. The
             SAT-J Ent team will use your preferred contact details to continue
             the conversation.

@@ -39,12 +39,12 @@ export default async function ProductsPage({
       <main className="mx-auto min-h-[70vh] max-w-7xl px-5 py-14 lg:px-8">
         <p className="font-bold text-primary uppercase">Public catalogue</p>
         <h1 className="mt-2 text-4xl font-black sm:text-5xl">Products</h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted">
+        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
           Find doors, tiles, sanitary ware and finishing materials for your
           project.
         </p>
         <CatalogueFilters q={q} categories={categories} brands={brands} attributes={attributeDefinitions} />
-        <p className="mt-7 text-sm text-muted">
+        <p className="mt-7 text-sm text-muted-foreground">
           {catalogue.total} {catalogue.total === 1 ? "product" : "products"}
         </p>
         <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export default async function ProductsPage({
         {!catalogue.items.length ? (
           <div className="mt-8 rounded-3xl bg-secondary p-10 text-center">
             <h2 className="text-xl font-black">No products found</h2>
-            <p className="mt-2 text-muted">
+            <p className="mt-2 text-muted-foreground">
               Try a broader search or clear the selected category.
             </p>
           </div>

@@ -35,7 +35,7 @@ export default async function Page({
         <p>
           Status: <strong>{a.status}</strong>
         </p>
-        <p className="mt-2 text-sm text-muted">{a.notes || "No notes."}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{a.notes || "No notes."}</p>
       </Card>
       <div className="space-y-2">
         {a.stock_adjustment_items.map((i) => {

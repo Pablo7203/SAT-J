@@ -129,7 +129,7 @@ export default async function ReportPage({
             ) : (
               <tr>
                 <td
-                  className="p-8 text-center text-muted"
+                  className="p-8 text-center text-muted-foreground"
                   colSpan={report.headers.length}
                 >
                   No report data matches these filters.

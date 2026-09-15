@@ -98,7 +98,7 @@ export default async function ProductPage({
       />
       <PublicHeader />
       <main className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-        <nav className="text-sm text-muted">
+        <nav className="text-sm text-muted-foreground">
           <Link href="/products">Products</Link> /{" "}
           <Link href={`/categories/${product.category.slug}`}>
             {product.category.name}
@@ -118,7 +118,7 @@ export default async function ProductPage({
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-muted">
+                <div className="flex h-full items-center justify-center text-muted-foreground">
                   Product photography coming soon
                 </div>
               )}
@@ -152,12 +152,12 @@ export default async function ProductPage({
               {product.name}
             </h1>
             {product.brand ? (
-              <p className="mt-3 text-muted">Brand: {product.brand}</p>
+              <p className="mt-3 text-muted-foreground">Brand: {product.brand}</p>
             ) : null}
             <span className="mt-6 inline-block rounded-full bg-secondary px-4 py-2 text-sm font-bold">
               {product.availability}
             </span>
-            <p className="mt-7 text-lg leading-8 text-muted">
+            <p className="mt-7 text-lg leading-8 text-muted-foreground">
               {product.description ??
                 "Contact SAT-J Ent for product specifications and project guidance."}
             </p>
@@ -179,7 +179,7 @@ export default async function ProductPage({
             ) : null}
             {selected ? (
               <div className="mt-8 rounded-2xl bg-white p-6">
-                <p className="text-sm text-muted">Selected option</p>
+                <p className="text-sm text-muted-foreground">Selected option</p>
                 <p className="mt-1 text-xl font-black">{selected.name}</p>
                 <p className="mt-3 text-2xl font-black">
                   {selected.price != null
@@ -190,7 +190,7 @@ export default async function ProductPage({
                   <dl className="mt-5 grid grid-cols-2 gap-3">
                     {Object.entries(selected.attributes).map(([k, v]) => (
                       <div key={k}>
-                        <dt className="text-xs text-muted">{k}</dt>
+                        <dt className="text-xs text-muted-foreground">{k}</dt>
                         <dd className="font-semibold">{v}</dd>
                       </div>
                     ))}
@@ -224,7 +224,7 @@ export default async function ProductPage({
           className="mx-auto mt-20 max-w-3xl scroll-mt-28 rounded-3xl border bg-white p-6 sm:p-10"
         >
           <h2 className="text-3xl font-black">Request a product quotation</h2>
-          <p className="mt-3 mb-8 text-muted">
+          <p className="mt-3 mb-8 text-muted-foreground">
             Tell us the quantity and how to reach you.
           </p>
           <QuoteForm

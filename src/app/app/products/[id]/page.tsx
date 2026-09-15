@@ -62,16 +62,16 @@ export default async function ProductPage({
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
-          <p className="text-sm text-muted">Status</p>
+          <p className="text-sm text-muted-foreground">Status</p>
           <p className="mt-1 font-bold">{p.status}</p>
-          <p className="mt-4 text-sm text-muted">Visibility</p>
+          <p className="mt-4 text-sm text-muted-foreground">Visibility</p>
           <p className="mt-1 font-bold">
             {p.is_public ? "Public" : "Internal"}
           </p>
         </Card>
         <Card className="lg:col-span-2">
           <h2 className="font-bold">Description</h2>
-          <p className="mt-2 whitespace-pre-wrap text-sm text-muted">
+          <p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">
             {p.description || "No description."}
           </p>
         </Card>
@@ -126,7 +126,7 @@ export default async function ProductPage({
               <div className="flex justify-between">
                 <div>
                   <h3 className="font-bold">{v.name}</h3>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">
                     SKU {v.sku}
                     {v.barcode ? ` · Barcode ${v.barcode}` : ""}
                   </p>
@@ -187,7 +187,7 @@ export default async function ProductPage({
       </section>
       <Card>
         <h2 className="font-bold">Inventory</h2>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-muted-foreground">
           Stock quantities and movements are intentionally deferred to Phase 3.
         </p>
       </Card>

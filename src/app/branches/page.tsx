@@ -15,7 +15,7 @@ export default async function BranchesPage() {
       <main className="mx-auto min-h-[70vh] max-w-7xl px-5 py-14 lg:px-8">
         <p className="font-bold text-primary uppercase">Visit SAT-J Ent</p>
         <h1 className="mt-2 text-5xl font-black">Branches</h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted">
+        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
           Contact or visit an approved active location.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -54,7 +54,7 @@ export default async function BranchesPage() {
             </article>
           ))}
           {!branches.length ? (
-            <p className="rounded-3xl bg-secondary p-8 text-muted">
+            <p className="rounded-3xl bg-secondary p-8 text-muted-foreground">
               Public branch details are being configured. Please use the contact
               page for available options.
             </p>

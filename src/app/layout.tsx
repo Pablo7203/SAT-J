@@ -1,5 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -12,7 +26,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html
+      lang="en"
+      className={cn(
+        "h-full antialiased",
+        "font-sans",
+        geist.variable,
+        geistMono.variable,
+      )}
+    >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );

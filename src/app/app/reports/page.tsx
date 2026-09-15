@@ -33,7 +33,7 @@ export default async function ReportsPage() {
               href={`/app/reports/${kind}?from=${range.from}&to=${range.to}`}
             >
               <h2 className="font-bold">{item.title}</h2>
-              <p className="mt-2 text-sm text-muted">{item.description}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
             </Link>
           ))}
       </div>

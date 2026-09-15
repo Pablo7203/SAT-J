@@ -264,7 +264,7 @@ export function SaleForm({
         ))}
       </fieldset>
       <Area name="notes" label="Sale notes" />
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Saving a draft does not reserve or reduce stock. Current stock is
         advisory and is checked again under lock at completion.
       </p>
@@ -332,7 +332,7 @@ export function CompleteSaleForm({
         Payment notes
         <Input name="notes" />
       </Label>
-      <p className="text-sm text-muted sm:col-span-2">
+      <p className="text-sm text-muted-foreground sm:col-span-2">
         Confirming deducts inventory immediately and generates the final
         receipt.
       </p>

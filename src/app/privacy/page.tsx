@@ -14,7 +14,7 @@ export default async function PrivacyPage() {
       <PublicHeader />
       <main className="mx-auto max-w-3xl px-5 py-16">
         <h1 className="text-4xl font-black">Privacy</h1>
-        <div className="mt-8 space-y-6 leading-8 text-muted">
+        <div className="mt-8 space-y-6 leading-8 text-muted-foreground">
           <p>
             When you submit an enquiry or quotation request, SAT-J Ent records
             the contact and project information you provide so its team can

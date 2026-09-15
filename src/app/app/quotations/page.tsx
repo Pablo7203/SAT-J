@@ -84,7 +84,7 @@ export default async function QuotationsPage({
                 <td className="p-3">
                   {r.name}
                   <br />
-                  <span className="text-muted">{r.phone}</span>
+                  <span className="text-muted-foreground">{r.phone}</span>
                 </td>
                 <td className="p-3">
                   {r.product_name_snapshot ?? "General enquiry"}
@@ -102,7 +102,7 @@ export default async function QuotationsPage({
           </tbody>
         </table>
         {!rows.length ? (
-          <p className="p-8 text-center text-muted">
+          <p className="p-8 text-center text-muted-foreground">
             No quotation requests match these filters.
           </p>
         ) : null}

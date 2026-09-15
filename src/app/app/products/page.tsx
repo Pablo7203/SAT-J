@@ -97,7 +97,7 @@ export default async function ProductsPage({
                 <div>
                   <p className="text-sm text-primary">{p.default_sku}</p>
                   <h2 className="text-lg font-bold">{p.name}</h2>
-                  <p className="mt-2 text-sm text-muted">
+                  <p className="mt-2 text-sm text-muted-foreground">
                     {p.brand_name ?? "Unbranded"} · {p.category_name} ·{" "}
                     {p.unit_code}
                   </p>
@@ -115,7 +115,7 @@ export default async function ProductsPage({
           </Card>
         ) : null}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Showing {products?.length ?? 0} of {count ?? 0} products.{" "}
         {page > 1 ? (
           <Link className="text-primary" href={`?page=${page - 1}`}>

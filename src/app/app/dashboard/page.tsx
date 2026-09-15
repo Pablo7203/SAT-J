@@ -120,7 +120,7 @@ export default async function DashboardPage({
           ) : null}
         </div>
       </div>
-      <form className="sticky top-0 z-10 grid gap-3 rounded-2xl border bg-surface/95 p-4 shadow-sm backdrop-blur sm:grid-cols-4">
+      <form className="grid gap-3 rounded-2xl border bg-surface p-4 shadow-sm sm:grid-cols-4">
         <label className="text-sm font-medium">
           From
           <input

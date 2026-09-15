@@ -76,19 +76,19 @@ export default async function Page({
       <Card>
         <dl className="grid gap-3 sm:grid-cols-3">
           <div>
-            <dt className="text-sm text-muted">Contact</dt>
+            <dt className="text-sm text-muted-foreground">Contact</dt>
             <dd>{supplier.contact_person || "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Phone</dt>
+            <dt className="text-sm text-muted-foreground">Phone</dt>
             <dd>{supplier.phone || "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Email</dt>
+            <dt className="text-sm text-muted-foreground">Email</dt>
             <dd>{supplier.email || "—"}</dd>
           </div>
           <div className="sm:col-span-3">
-            <dt className="text-sm text-muted">Address / notes</dt>
+            <dt className="text-sm text-muted-foreground">Address / notes</dt>
             <dd>
               {supplier.address || "—"} {supplier.notes}
             </dd>

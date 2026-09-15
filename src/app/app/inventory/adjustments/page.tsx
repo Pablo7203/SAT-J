@@ -32,7 +32,7 @@ export default async function Page() {
               <div className="flex justify-between">
                 <div>
                   <strong>{x.adjustment_number}</strong>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">
                     {related(x.branch)?.name} · {related(x.reason)?.name} ·{" "}
                     {x.stock_adjustment_items.length} item(s)
                   </p>

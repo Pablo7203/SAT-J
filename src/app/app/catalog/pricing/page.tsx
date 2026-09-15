@@ -38,14 +38,14 @@ export default async function Page() {
                   >
                     {product?.name}
                   </Link>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">
                     {variant?.name} · {variant?.sku} ·{" "}
                     {branch?.name ?? "Company-wide"}
                   </p>
                 </div>
                 <div className="text-right">
                   <strong>{formatGhs(p.amount)}</strong>
-                  <p className="text-xs text-muted">
+                  <p className="text-xs text-muted-foreground">
                     {p.price_type} · {p.effective_to ? "Historical" : "Current"}
                   </p>
                 </div>

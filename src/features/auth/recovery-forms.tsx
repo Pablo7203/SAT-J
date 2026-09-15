@@ -52,7 +52,7 @@ export function ResetPasswordForm() {
           minLength={12}
           required
         />
-        <p className="mt-1 text-xs text-muted">Use at least 12 characters.</p>
+        <p className="mt-1 text-xs text-muted-foreground">Use at least 12 characters.</p>
       </div>
       {state.message ? (
         <p

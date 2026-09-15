@@ -75,19 +75,19 @@ export default async function InventoryPage({
       <div className="grid gap-3 sm:grid-cols-4">
         <Card>
           <strong>{count ?? 0}</strong>
-          <p className="text-sm text-muted">Initialized branch/SKUs</p>
+          <p className="text-sm text-muted-foreground">Initialized branch/SKUs</p>
         </Card>
         <Card>
           <strong>{summary.LOW_STOCK ?? 0}</strong>
-          <p className="text-sm text-muted">Low stock in this page</p>
+          <p className="text-sm text-muted-foreground">Low stock in this page</p>
         </Card>
         <Card>
           <strong>{summary.OUT_OF_STOCK ?? 0}</strong>
-          <p className="text-sm text-muted">Out of stock in this page</p>
+          <p className="text-sm text-muted-foreground">Out of stock in this page</p>
         </Card>
         <Card>
           <strong>{inTransit}</strong>
-          <p className="text-sm text-muted">Units in transit (not available)</p>
+          <p className="text-sm text-muted-foreground">Units in transit (not available)</p>
         </Card>
       </div>
       <Card>
@@ -156,7 +156,7 @@ export default async function InventoryPage({
                 <h2 className="font-bold">
                   {row.product_name} · {row.variant_name}
                 </h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-muted-foreground">
                   {row.sku} · {row.category_name} · {row.branch_name}
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default async function InventoryPage({
                 <strong>
                   {formatQuantity(row.quantity_on_hand, row.unit_symbol)}
                 </strong>
-                <p className="text-xs text-muted">
+                <p className="text-xs text-muted-foreground">
                   Minimum{" "}
                   {formatQuantity(row.minimum_stock_level, row.unit_symbol)}
                 </p>
@@ -179,7 +179,7 @@ export default async function InventoryPage({
           <Card>No inventory has been initialized for the selected scope.</Card>
         ) : null}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Showing {rows?.length ?? 0} of {count ?? 0}.{" "}
         {page > 1 ? (
           <Link href={`?page=${page - 1}`} className="text-primary">

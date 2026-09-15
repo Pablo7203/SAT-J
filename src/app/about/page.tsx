@@ -13,9 +13,9 @@ export default async function AboutPage() {
     <>
       <PublicHeader />
       <main>
-        <section className="bg-[#14251b] px-5 py-24 text-white">
+        <section className="bg-[#0f172a] px-5 py-24 text-white">
           <div className="mx-auto max-w-5xl">
-            <p className="font-bold text-[#d7b56d] uppercase">
+            <p className="font-bold text-primary">
               About SAT-J Ent
             </p>
             <h1 className="mt-4 max-w-4xl text-5xl font-black sm:text-6xl">
@@ -26,19 +26,19 @@ export default async function AboutPage() {
         <section className="mx-auto grid max-w-5xl gap-10 px-5 py-20 md:grid-cols-2">
           <div>
             <h2 className="text-3xl font-black">What we supply</h2>
-            <p className="mt-4 leading-8 text-muted">
+            <p className="mt-4 leading-8 text-muted-foreground">
               SAT-J Ent supplies doors, tiles, tiling materials, sanitary ware,
               bathroom accessories and other building materials.
             </p>
           </div>
           <div>
             <h2 className="text-3xl font-black">How to work with us</h2>
-            <p className="mt-4 leading-8 text-muted">
+            <p className="mt-4 leading-8 text-muted-foreground">
               Browse the approved catalogue, compare available options, request
               a quotation, or contact an approved branch for guidance.
             </p>
             <Link
-              className="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-bold text-white"
+              className="mt-6 inline-block rounded-lg bg-primary px-6 py-3 font-bold text-white transition-colors hover:bg-primary-hover"
               href="/products"
             >
               Explore products

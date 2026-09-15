@@ -90,7 +90,7 @@ export default async function Page({
                   <strong>
                     {p?.name} · {v?.name}
                   </strong>
-                  <p className="text-sm text-muted">
+                  <p className="text-sm text-muted-foreground">
                     {v?.sku} · {b?.name} ·{" "}
                     {new Date(x.occurred_at).toLocaleString()}
                   </p>

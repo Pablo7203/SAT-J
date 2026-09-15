@@ -49,11 +49,11 @@ export default async function CategoryPage({
       />
       <PublicHeader />
       <main className="mx-auto min-h-[70vh] max-w-7xl px-5 py-14 lg:px-8">
-        <nav className="text-sm text-muted">
+        <nav className="text-sm text-muted-foreground">
           <Link href="/products">Products</Link> / {category.name}
         </nav>
         <h1 className="mt-6 text-5xl font-black">{category.name}</h1>
-        <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
+        <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
           {category.description ??
             `Explore ${category.name} selected for building and finishing projects.`}
         </p>

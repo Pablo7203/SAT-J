@@ -5,7 +5,7 @@ import type { PublicProductCard } from "@/lib/public-data";
 import { formatGhs } from "@/lib/format";
 export function ProductCard({ product }: { product: PublicProductCard }) {
   return (
-    <article className="group overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+    <article className="group overflow-hidden rounded-2xl border border-stone-200/90 bg-white transition-[box-shadow,transform] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_35px_rgb(15_23_42_/_0.12)]">
       <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#eef1eb]">
           {product.image_url ? (
@@ -21,12 +21,9 @@ export function ProductCard({ product }: { product: PublicProductCard }) {
               <ImageIcon size={42} />
             </div>
           )}
-          <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-stone-700">
-            {product.availability}
-          </span>
         </div>
         <div className="p-5">
-          <p className="text-xs font-bold tracking-wider text-primary uppercase">
+          <p className="text-xs font-semibold tracking-wide text-primary">
             {product.category}
           </p>
           <div className="mt-2 flex items-start justify-between gap-4">
@@ -34,8 +31,11 @@ export function ProductCard({ product }: { product: PublicProductCard }) {
             <ArrowUpRight className="shrink-0 text-stone-400 transition group-hover:text-primary" />
           </div>
           {product.brand ? (
-            <p className="mt-1 text-sm text-muted">{product.brand}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{product.brand}</p>
           ) : null}
+          <p className="mt-3 text-xs font-semibold text-muted-foreground">
+            {product.availability}
+          </p>
           <p className="mt-4 font-bold">
             {product.price != null
               ? `From ${formatGhs(product.price)}`

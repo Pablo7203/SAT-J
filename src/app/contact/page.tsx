@@ -20,7 +20,7 @@ export default async function ContactPage() {
       <PublicHeader />
       <main className="mx-auto min-h-[70vh] max-w-5xl px-5 py-16">
         <h1 className="text-5xl font-black">Let’s talk about your project.</h1>
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
           Browse products first, request a formal quotation, or use an available
           configured contact channel.
         </p>
@@ -32,7 +32,7 @@ export default async function ContactPage() {
             >
               <Phone className="text-primary" />
               <h2 className="mt-5 text-xl font-black">Call SAT-J Ent</h2>
-              <p className="mt-2 text-muted">{c.phone}</p>
+              <p className="mt-2 text-muted-foreground">{c.phone}</p>
             </a>
           ) : null}
           {c.email ? (
@@ -42,7 +42,7 @@ export default async function ContactPage() {
             >
               <Mail className="text-primary" />
               <h2 className="mt-5 text-xl font-black">Email</h2>
-              <p className="mt-2 text-muted">{c.email}</p>
+              <p className="mt-2 text-muted-foreground">{c.email}</p>
             </a>
           ) : null}
           {whatsapp ? (
@@ -54,7 +54,7 @@ export default async function ContactPage() {
             >
               <MessageCircle className="text-primary" />
               <h2 className="mt-5 text-xl font-black">WhatsApp</h2>
-              <p className="mt-2 text-muted">Start a product conversation</p>
+              <p className="mt-2 text-muted-foreground">Start a product conversation</p>
             </a>
           ) : null}
           <Link className="rounded-3xl bg-primary p-7 text-white" href="/quote">

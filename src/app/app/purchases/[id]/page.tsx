@@ -84,19 +84,19 @@ export default async function Page({
       <Card>
         <dl className="grid gap-3 sm:grid-cols-4">
           <div>
-            <dt className="text-sm text-muted">Purchase date</dt>
+            <dt className="text-sm text-muted-foreground">Purchase date</dt>
             <dd>{p.purchase_date}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Supplier invoice</dt>
+            <dt className="text-sm text-muted-foreground">Supplier invoice</dt>
             <dd>{p.supplier_invoice_number || "—"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Total</dt>
+            <dt className="text-sm text-muted-foreground">Total</dt>
             <dd>{formatGhs(p.total_amount)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Paid / due</dt>
+            <dt className="text-sm text-muted-foreground">Paid / due</dt>
             <dd>
               {formatGhs(p.amount_paid)} / {formatGhs(p.balance_due)}
             </dd>
@@ -171,7 +171,7 @@ export default async function Page({
           {!payments?.length ? <p>No payments recorded.</p> : null}
         </Card>
       ) : null}
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Created {new Date(p.created_at).toLocaleString()} · Updated{" "}
         {new Date(p.updated_at).toLocaleString()} ·{" "}
         <Link href={`/app/suppliers/${p.supplier_id}`} className="text-primary">

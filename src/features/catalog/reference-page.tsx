@@ -70,7 +70,7 @@ export async function ReferencePage({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="font-bold">{item.name}</h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-muted-foreground">
                   {item.code ?? item.slug ?? item.data_type}
                   {item.symbol ? ` · ${item.symbol}` : ""}
                 </p>

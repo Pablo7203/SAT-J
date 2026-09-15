@@ -63,7 +63,7 @@ export default async function TransferDetailPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-muted">Stock transfer</p>
+          <p className="text-sm text-muted-foreground">Stock transfer</p>
           <h1 className="text-3xl font-bold">{header.transfer_number}</h1>
           <p>
             {names.get(header.source_branch_id)} →{" "}
@@ -85,27 +85,27 @@ export default async function TransferDetailPage({
       <Card>
         <dl className="grid gap-3 sm:grid-cols-3">
           <div>
-            <dt className="text-sm text-muted">Requested</dt>
+            <dt className="text-sm text-muted-foreground">Requested</dt>
             <dd>{stamp(header.requested_at)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Approved</dt>
+            <dt className="text-sm text-muted-foreground">Approved</dt>
             <dd>{stamp(header.approved_at)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Dispatched</dt>
+            <dt className="text-sm text-muted-foreground">Dispatched</dt>
             <dd>{stamp(header.dispatched_at)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Received</dt>
+            <dt className="text-sm text-muted-foreground">Received</dt>
             <dd>{stamp(header.received_at)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Created by</dt>
+            <dt className="text-sm text-muted-foreground">Created by</dt>
             <dd className="break-all">{header.created_by}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Notes</dt>
+            <dt className="text-sm text-muted-foreground">Notes</dt>
             <dd>{header.notes || "—"}</dd>
           </div>
         </dl>
@@ -152,7 +152,7 @@ export default async function TransferDetailPage({
       context.permissions.includes("transfers.create") ? (
         <Card>
           <h2 className="font-bold">Submit request</h2>
-          <p className="my-2 text-sm text-muted">
+          <p className="my-2 text-sm text-muted-foreground">
             Submitting locks the item request for source approval. Inventory
             remains unchanged.
           </p>
@@ -167,7 +167,7 @@ export default async function TransferDetailPage({
       context.permissions.includes("transfers.approve") ? (
         <Card>
           <h2 className="font-bold">Approve transfer</h2>
-          <p className="my-2 text-sm text-muted">
+          <p className="my-2 text-sm text-muted-foreground">
             Approval authorizes the requested quantities but does not reserve or
             move stock.
           </p>

@@ -58,7 +58,7 @@ export default async function AttributesPage() {
             <div className="flex justify-between">
               <div>
                 <h2 className="font-bold">{a.name}</h2>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-muted-foreground">
                   {a.code} · {a.data_type}
                 </p>
               </div>

@@ -6,7 +6,7 @@ export default function ForgotPasswordPage() {
     <main className="grid min-h-screen place-items-center px-5">
       <Card className="w-full max-w-md">
         <h1 className="text-2xl font-bold">Recover your password</h1>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-muted-foreground">
           Enter your employee email address.
         </p>
         <ForgotPasswordForm />

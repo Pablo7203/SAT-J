@@ -34,7 +34,7 @@ export function QuoteForm({
       </label>
       {product ? (
         <div className="rounded-xl bg-secondary p-4 sm:col-span-2">
-          <p className="text-sm text-muted">Product</p>
+          <p className="text-sm text-muted-foreground">Product</p>
           <p className="font-bold">{product.name}</p>
         </div>
       ) : null}
@@ -108,7 +108,7 @@ export function QuoteForm({
       >
         {pending ? "Sending…" : "Send quotation request"}
       </button>
-      <p className="text-xs text-muted sm:col-span-2">
+      <p className="text-xs text-muted-foreground sm:col-span-2">
         By submitting, you ask SAT-J Ent to contact you about this enquiry.
       </p>
     </form>

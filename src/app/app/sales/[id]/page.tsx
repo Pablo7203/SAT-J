@@ -55,25 +55,25 @@ export default async function Page({
       <Card>
         <dl className="grid gap-3 sm:grid-cols-4">
           <div>
-            <dt className="text-sm text-muted">Receipt</dt>
+            <dt className="text-sm text-muted-foreground">Receipt</dt>
             <dd>{sale.receipt_number || "Not completed"}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Date</dt>
+            <dt className="text-sm text-muted-foreground">Date</dt>
             <dd>{new Date(sale.sale_date).toLocaleString()}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Total</dt>
+            <dt className="text-sm text-muted-foreground">Total</dt>
             <dd>{formatGhs(sale.total_amount)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Paid / due</dt>
+            <dt className="text-sm text-muted-foreground">Paid / due</dt>
             <dd>
               {formatGhs(sale.amount_paid)} / {formatGhs(sale.balance_due)}
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-muted">Due date</dt>
+            <dt className="text-sm text-muted-foreground">Due date</dt>
             <dd>{sale.payment_due_date || "—"}</dd>
           </div>
         </dl>
@@ -162,7 +162,7 @@ export default async function Page({
           <CancelSaleForm saleId={id} />
         </Card>
       ) : null}
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Created {new Date(sale.created_at).toLocaleString()} ·{" "}
         <Link
           className="text-primary"

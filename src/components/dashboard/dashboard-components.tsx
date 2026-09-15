@@ -22,7 +22,7 @@ export function MetricCard({
   const delta = prior == null ? null : comparison(value, prior);
   const body = (
     <Card className="h-full border-l-4 border-l-primary">
-      <p className="text-sm font-medium text-muted">{label}</p>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
       <p className="mt-2 text-2xl font-bold tracking-tight">
         {money
           ? formatGhs(value)
@@ -30,9 +30,9 @@ export function MetricCard({
               value,
             )}
       </p>
-      {context ? <p className="mt-1 text-xs text-muted">{context}</p> : null}
+      {context ? <p className="mt-1 text-xs text-muted-foreground">{context}</p> : null}
       {delta ? (
-        <p className="mt-3 flex items-center gap-1 text-xs text-muted">
+        <p className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
           {delta.percent == null ? (
             <Minus size={14} />
           ) : delta.percent >= 0 ? (
@@ -72,7 +72,7 @@ export function DashboardSection({
         <div>
           <h2 className="text-lg font-bold">{title}</h2>
           {description ? (
-            <p className="text-sm text-muted">{description}</p>
+            <p className="text-sm text-muted-foreground">{description}</p>
           ) : null}
         </div>
         {action ? (
@@ -103,7 +103,7 @@ export function TrendChart({
       .join(" ");
   if (!points.some((point) => point.sales || point.collections))
     return (
-      <p className="rounded-lg bg-secondary p-6 text-center text-sm text-muted">
+      <p className="rounded-lg bg-secondary p-6 text-center text-sm text-muted-foreground">
         No completed sales or posted collections for this period.
       </p>
     );
@@ -159,7 +159,7 @@ export function RankedBars({
 }) {
   const max = Math.max(1, ...rows.map((row) => row.value));
   if (!rows.length)
-    return <p className="text-sm text-muted">No data for this period.</p>;
+    return <p className="text-sm text-muted-foreground">No data for this period.</p>;
   return (
     <ol className="space-y-4">
       {rows.map((row, index) => (

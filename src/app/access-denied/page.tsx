@@ -11,7 +11,7 @@ export default function AccessDeniedPage() {
           size={44}
         />
         <h1 className="mt-4 text-3xl font-bold">Access unavailable</h1>
-        <p className="mt-3 text-muted">
+        <p className="mt-3 text-muted-foreground">
           Your account is not currently authorized for the SAT-J Ent internal
           application. Contact an administrator if you believe this is
           unexpected.

@@ -144,7 +144,7 @@ export default async function TransfersPage({
         })}
         {!transfers.length ? <Card>No transfers found.</Card> : null}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Showing {transfers.length} of {count ?? 0}.{" "}
         {page > 1 ? (
           <Link className="text-primary" href={`?page=${page - 1}`}>

@@ -45,7 +45,7 @@ export default async function BranchesPage() {
                   {branch.is_active ? "Active" : "Inactive"}
                 </span>
               </div>
-              <p className="mt-4 text-sm text-muted">
+              <p className="mt-4 text-sm text-muted-foreground">
                 {branch.address}
                 <br />
                 {branch.phone}

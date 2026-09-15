@@ -270,7 +270,7 @@ export function ReceiptForm({
         <Input name="deliveryReference" />
       </Label>
       <Area name="notes" label="Receipt notes" />
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Confirming immediately updates inventory. This posted receipt cannot be
         edited.
       </p>

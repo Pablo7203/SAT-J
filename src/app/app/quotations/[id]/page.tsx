@@ -29,18 +29,18 @@ export default async function QuotationPage({
           <h2 className="text-lg font-bold">Prospect</h2>
           <dl className="mt-5 grid gap-4 text-sm">
             <div>
-              <dt className="text-muted">Name</dt>
+              <dt className="text-muted-foreground">Name</dt>
               <dd className="font-semibold">{q.name}</dd>
             </div>
             <div>
-              <dt className="text-muted">Phone</dt>
+              <dt className="text-muted-foreground">Phone</dt>
               <dd>
                 <a href={`tel:${q.phone}`}>{q.phone}</a>
               </dd>
             </div>
             {q.email ? (
               <div>
-                <dt className="text-muted">Email</dt>
+                <dt className="text-muted-foreground">Email</dt>
                 <dd>
                   <a href={`mailto:${q.email}`}>{q.email}</a>
                 </dd>
@@ -48,7 +48,7 @@ export default async function QuotationPage({
             ) : null}
             {q.customer_company ? (
               <div>
-                <dt className="text-muted">Company</dt>
+                <dt className="text-muted-foreground">Company</dt>
                 <dd>{q.customer_company}</dd>
               </div>
             ) : null}
@@ -58,30 +58,30 @@ export default async function QuotationPage({
           <h2 className="text-lg font-bold">Request</h2>
           <dl className="mt-5 grid gap-4 text-sm">
             <div>
-              <dt className="text-muted">Product</dt>
+              <dt className="text-muted-foreground">Product</dt>
               <dd>{q.product_name_snapshot ?? "General project request"}</dd>
             </div>
             {q.variant_name_snapshot ? (
               <div>
-                <dt className="text-muted">Variant</dt>
+                <dt className="text-muted-foreground">Variant</dt>
                 <dd>{q.variant_name_snapshot}</dd>
               </div>
             ) : null}
             {q.quantity ? (
               <div>
-                <dt className="text-muted">Quantity</dt>
+                <dt className="text-muted-foreground">Quantity</dt>
                 <dd>{q.quantity}</dd>
               </div>
             ) : null}
             <div>
-              <dt className="text-muted">Preferred branch</dt>
+              <dt className="text-muted-foreground">Preferred branch</dt>
               <dd>
                 {(q.branch as unknown as { name: string } | null)?.name ??
                   "No preference"}
               </dd>
             </div>
             <div>
-              <dt className="text-muted">Message</dt>
+              <dt className="text-muted-foreground">Message</dt>
               <dd className="whitespace-pre-wrap">
                 {q.message ?? "No additional message."}
               </dd>

@@ -26,12 +26,12 @@ export default async function AuditPage() {
             >
               <div>
                 <h2 className="font-semibold">{event.action}</h2>
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {event.entity_type}
                   {event.entity_id ? ` · ${event.entity_id}` : ""}
                 </p>
               </div>
-              <div className="text-right text-xs text-muted">
+              <div className="text-right text-xs text-muted-foreground">
                 <time dateTime={event.created_at}>
                   {new Intl.DateTimeFormat("en-GH", {
                     dateStyle: "medium",

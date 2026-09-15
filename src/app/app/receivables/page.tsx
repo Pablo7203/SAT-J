@@ -93,7 +93,7 @@ export default async function Page({
       </Card>
       <Card>
         <strong>{formatGhs(total)}</strong>
-        <p className="text-sm text-muted">Outstanding on this page</p>
+        <p className="text-sm text-muted-foreground">Outstanding on this page</p>
       </Card>
       <div className="space-y-3">
         {data?.map((x) => (
@@ -120,7 +120,7 @@ export default async function Page({
         ))}
         {!data?.length ? <Card>No outstanding receivables.</Card> : null}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-muted-foreground">
         Showing {data?.length ?? 0} of {count ?? 0}.{" "}
         {page > 1 ? <Link href={`?page=${page - 1}`}>Previous</Link> : null}{" "}
         {(count ?? 0) > page * size ? (

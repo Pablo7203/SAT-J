@@ -14,7 +14,7 @@ export default function ErrorPage({
         <h1 className="mt-2 text-3xl font-bold">
           We could not load this page.
         </h1>
-        <p className="mt-3 text-muted">
+        <p className="mt-3 text-muted-foreground">
           Please try again. If the problem continues, contact the system
           administrator.
         </p>

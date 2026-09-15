@@ -68,7 +68,7 @@ export default async function UsersPage() {
                     <h2 className="text-lg font-bold">
                       {profile.full_name || "Unnamed employee"}
                     </h2>
-                    <p className="text-sm text-muted">
+                    <p className="text-sm text-muted-foreground">
                       {emails.get(profile.id) ||
                         "Email unavailable without admin configuration"}
                     </p>

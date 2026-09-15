@@ -80,7 +80,7 @@ export default async function Page({
           {c.company_name || "No company"} · {c.phone || "No phone"} ·{" "}
           {c.email || "No email"}
         </p>
-        <p className="mt-2 text-muted">
+        <p className="mt-2 text-muted-foreground">
           {c.address} {c.notes}
         </p>
       </Card>

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Building2, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const links = [
@@ -12,6 +13,7 @@ const links = [
 ];
 export function PublicHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   return (
     <header className="sticky top-0 z-40 border-b border-stone-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
@@ -28,7 +30,7 @@ export function PublicHeader() {
         >
           {links.map((l) => (
             <Link
-              className="text-sm font-semibold text-stone-700 hover:text-primary"
+              className={`rounded-lg px-2 py-2 text-sm font-semibold transition-colors ${pathname === l.href ? "bg-secondary text-primary" : "text-stone-700 hover:text-primary"}`}
               href={l.href}
               key={l.href}
             >
@@ -36,7 +38,7 @@ export function PublicHeader() {
             </Link>
           ))}
           <Link
-            className="rounded-full bg-primary px-5 py-3 text-sm font-bold text-white hover:bg-primary-hover"
+            className="rounded-lg bg-primary px-5 py-3 text-sm font-bold text-white transition-[background-color,box-shadow,transform] duration-200 hover:bg-primary-hover hover:shadow-[0_8px_20px_rgb(37_99_235_/_0.18)] active:translate-y-px"
             href="/quote"
           >
             Request a Quote
@@ -62,7 +64,7 @@ export function PublicHeader() {
             {links.map((l) => (
               <Link
                 onClick={() => setOpen(false)}
-                className="min-h-11 rounded-lg px-3 py-3 font-semibold hover:bg-secondary"
+                className={`min-h-11 rounded-lg px-3 py-3 font-semibold ${pathname === l.href ? "bg-secondary text-primary" : "hover:bg-secondary"}`}
                 href={l.href}
                 key={l.href}
               >
@@ -71,7 +73,7 @@ export function PublicHeader() {
             ))}
             <Link
               onClick={() => setOpen(false)}
-              className="mt-2 min-h-11 rounded-lg bg-primary px-4 py-3 text-center font-bold text-white"
+              className="mt-2 min-h-11 rounded-lg bg-primary px-4 py-3 text-center font-bold text-white transition-colors hover:bg-primary-hover"
               href="/quote"
             >
               Request a Quote
@@ -90,7 +92,7 @@ export function PublicFooter({
   email: string | null;
 }) {
   return (
-    <footer className="mt-auto bg-[#14251b] text-white">
+    <footer className="mt-auto bg-[#0f172a] text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-3 lg:px-8">
         <div>
           <p className="text-xl font-black">SAT-J Ent</p>
