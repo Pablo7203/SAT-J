@@ -81,6 +81,13 @@ def add_page_number(paragraph):
     run._r.extend([begin, instr, separate, end])
 
 
+def remove_paragraph_border(paragraph_or_style):
+    p_pr = paragraph_or_style._element.get_or_add_pPr()
+    border = p_pr.find(qn("w:pBdr"))
+    if border is not None:
+        p_pr.remove(border)
+
+
 def add_bullet(doc, text, level=0):
     p = doc.add_paragraph(style="List Bullet" if level == 0 else "List Bullet 2")
     p.add_run(text)
@@ -99,6 +106,12 @@ def add_heading(doc, text, level=1):
     return p
 
 
+def prevent_row_split(row):
+    tr_pr = row._tr.get_or_add_trPr()
+    if tr_pr.find(qn("w:cantSplit")) is None:
+        tr_pr.append(OxmlElement("w:cantSplit"))
+
+
 def add_table(doc, headers, rows, widths=None):
     table = doc.add_table(rows=1, cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -106,6 +119,7 @@ def add_table(doc, headers, rows, widths=None):
     set_table_borders(table)
     hdr = table.rows[0]
     set_repeat_header(hdr)
+    prevent_row_split(hdr)
     for idx, value in enumerate(headers):
         cell = hdr.cells[idx]
         set_cell_shading(cell, NAVY)
@@ -119,7 +133,9 @@ def add_table(doc, headers, rows, widths=None):
         if widths:
             cell.width = widths[idx]
     for row_idx, values in enumerate(rows):
-        cells = table.add_row().cells
+        row = table.add_row()
+        prevent_row_split(row)
+        cells = row.cells
         if row_idx % 2:
             for cell in cells:
                 set_cell_shading(cell, PALE_BLUE)
@@ -141,7 +157,7 @@ section = doc.sections[0]
 section.page_width = Inches(8.5)
 section.page_height = Inches(11)
 section.top_margin = Inches(0.72)
-section.bottom_margin = Inches(0.72)
+section.bottom_margin = Inches(0.85)
 section.left_margin = Inches(0.78)
 section.right_margin = Inches(0.78)
 
@@ -168,6 +184,8 @@ for style_name, size, before, after in (
     style.paragraph_format.space_after = Pt(after)
     style.paragraph_format.keep_with_next = True
 
+remove_paragraph_border(styles["Title"])
+
 for list_style in ("List Bullet", "List Bullet 2", "List Number"):
     styles[list_style].font.name = "Aptos"
     styles[list_style].font.size = Pt(10.5)
@@ -184,6 +202,7 @@ add_page_number(footer)
 
 title = doc.add_paragraph(style="Title")
 title.add_run("SAT J Ent Branch Operations Guide")
+remove_paragraph_border(title)
 subtitle = doc.add_paragraph()
 subtitle_run = subtitle.add_run("How employees use the system at each branch")
 subtitle_run.bold = True
@@ -266,6 +285,7 @@ doc.add_paragraph(
     "The Branch Manager cannot manage system roles, company branches, or employee access unless a separate company-level account grants those permissions."
 )
 
+doc.add_page_break()
 add_heading(doc, "Sales and Cashier Responsibilities", 2)
 doc.add_paragraph("The Sales or Cashier role handles customer-facing transactions. The role can:")
 for item in (
@@ -341,9 +361,10 @@ add_table(
 )
 
 add_heading(doc, "Inter Branch Stock Transfers", 1)
-doc.add_paragraph(
+transfer_intro = doc.add_paragraph(
     "Transfers move product variants from a source branch to a different active destination branch. The process protects both branch balances and identifies stock that is physically travelling between locations."
 )
+transfer_intro.paragraph_format.keep_with_next = True
 transfer_steps = (
     ("Draft", "Source branch", "Create the transfer and add requested quantities. Inventory does not change."),
     ("Requested", "Source branch", "Submit the transfer for approval. Inventory still does not change."),
@@ -408,11 +429,11 @@ add_table(
 add_heading(doc, "Head Office Responsibilities", 1)
 doc.add_paragraph("Owner or Management users monitor the company through:")
 for item in (
-    "Combined and branch-level sales, collections, and purchasing results.",
+    "Company and branch sales, collections, and purchasing results.",
     "Branch comparisons and product performance.",
     "Inventory levels, low-stock items, and stock in transit.",
     "Customer receivables and supplier balances.",
-    "Employee access records, roles, and audit history where authorised.",
+    "Employee access, roles, and audit history where authorised.",
     "Public website content and quotation requests.",
 ):
     add_bullet(doc, item)

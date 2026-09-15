@@ -51,6 +51,7 @@ next-env.d.ts
 .eslintcache
 .idea/
 .vscode/
+/artifacts/branch-guide-render*/
 
 # local Supabase/runtime state
 /.supabase/
