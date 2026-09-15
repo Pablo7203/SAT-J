@@ -4,9 +4,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { PublicFooter, PublicHeader } from "@/components/public/public-shell";
-import { breadcrumbs, publicSiteUrl, StructuredData } from "@/components/public/structured-data";
+import {
+  breadcrumbs,
+  StructuredData,
+} from "@/components/public/structured-data";
 import { QuoteForm } from "@/features/quotations/quote-form";
 import { formatGhs } from "@/lib/format";
+import { publicSiteUrl } from "@/lib/env/site-url";
 import {
   publicBranches,
   publicProduct,
@@ -52,7 +56,7 @@ export default async function ProductPage({
       product.variants.find((v) => v.id === requested) ?? product.variants[0],
     whatsapp = whatsappHref(
       config.whatsapp_number,
-      `Hello SAT-J Ent, I am interested in ${product.name}${selected ? ` — ${selected.name}` : ""}. ${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/products/${product.slug}`,
+      `Hello SAT-J Ent, I am interested in ${product.name}${selected ? ` — ${selected.name}` : ""}. ${publicSiteUrl(`/products/${product.slug}`)}`,
     );
   const publicPrices = product.variants.map((variant) => variant.price);
   const oneClearPrice =
@@ -152,7 +156,9 @@ export default async function ProductPage({
               {product.name}
             </h1>
             {product.brand ? (
-              <p className="mt-3 text-muted-foreground">Brand: {product.brand}</p>
+              <p className="mt-3 text-muted-foreground">
+                Brand: {product.brand}
+              </p>
             ) : null}
             <span className="mt-6 inline-block rounded-full bg-secondary px-4 py-2 text-sm font-bold">
               {product.availability}

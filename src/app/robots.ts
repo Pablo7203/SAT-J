@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
+import { publicSiteUrl } from "@/lib/env/site-url";
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   if (process.env.NEXT_PUBLIC_APP_ENV !== "production") {
     return { rules: { userAgent: "*", disallow: ["/", "/app/"] } };
   }
@@ -16,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
         "/access-denied",
       ],
     },
-    sitemap: `${base}/sitemap.xml`,
+    sitemap: publicSiteUrl("/sitemap.xml"),
   };
 }

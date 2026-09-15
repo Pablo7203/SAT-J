@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { resolveSiteUrl } from "@/lib/env/site-url";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -16,9 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ),
+  metadataBase: resolveSiteUrl(),
   title: { default: "SAT-J Ent", template: "%s | SAT-J Ent" },
   description:
     "Doors, tiles, sanitary ware and building materials from SAT-J Ent.",

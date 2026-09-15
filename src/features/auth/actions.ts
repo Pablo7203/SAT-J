@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { loginSchema } from "@/features/auth/schema";
 import { hasPublicSupabaseEnv } from "@/lib/env/public";
+import { publicSiteUrl } from "@/lib/env/site-url";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthState = { message?: string; success: boolean };
@@ -63,7 +64,7 @@ export async function requestPasswordReset(
   if (hasPublicSupabaseEnv()) {
     const supabase = await createClient();
     await supabase.auth.resetPasswordForEmail(email.data, {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback?next=/reset-password`,
+      redirectTo: publicSiteUrl("/auth/callback?next=/reset-password"),
     });
   }
   return {

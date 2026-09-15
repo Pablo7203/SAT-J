@@ -2,6 +2,8 @@
 
 ## Baseline identity
 
+The configured Git remote is `https://github.com/Pablo7203/SAT-J.git`. On 2026-09-15, local `main` and fetched `origin/main` both resolved to `c4ccec3edb15fc64b9faef9348c3aa4a3b75e243`. The staging deployment URL and deployed commit remain pending; see `docs/staging-deployment.md`.
+
 The release baseline is the repository's initial commit on `main`, with commit message `chore: establish SAT-J Ent v1 release baseline`. Resolve the immutable full identifier with `git rev-parse HEAD`; the verified value is also recorded in the task completion report. A commit cannot embed its own SHA without changing that SHA, so this document deliberately uses Git as the authoritative identifier.
 
 This baseline is **Staging Candidate 1**, not the final `v1.0.0` release. Create no final release tag until hosted staging security checks, business UAT, content/data approval, backup evidence, and production cutover approval pass.
@@ -16,17 +18,17 @@ Tracked fixtures use synthetic names, invalid test email domains, and disposable
 
 Local, staging, and production require separate Supabase and hosting targets. Never reuse production keys, accounts, datasets, or storage in staging. Set `NEXT_PUBLIC_APP_ENV=staging` on staging; the application then returns a site-wide robots disallow rule. Set `production` only on the approved production host.
 
-| Variable | Classification | Staging requirement |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Public | Staging project API URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Staging publishable key |
-| `NEXT_PUBLIC_SITE_URL` | Public | Exact HTTPS staging origin |
-| `NEXT_PUBLIC_APP_ENV` | Public | `staging` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only | Trusted Auth administration only |
-| `E2E_ACTIVE_PASSWORD` | Test-only | Synthetic staging test secret if automated setup is authorized |
-| `E2E_INACTIVE_PASSWORD` | Test-only | Synthetic staging test secret if automated setup is authorized |
-| `OPENING_STOCK_OPERATOR_EMAIL` | Optional operations | Not needed for synthetic smoke unless import is exercised |
-| `OPENING_STOCK_OPERATOR_PASSWORD` | Optional server/process secret | Never expose to browser or Git |
+| Variable                               | Classification                 | Staging requirement                                            |
+| -------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Public                         | Staging project API URL                                        |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public                         | Staging publishable key                                        |
+| `NEXT_PUBLIC_SITE_URL`                 | Public                         | Exact HTTPS staging origin                                     |
+| `NEXT_PUBLIC_APP_ENV`                  | Public                         | `staging`                                                      |
+| `SUPABASE_SERVICE_ROLE_KEY`            | Server-only                    | Trusted Auth administration only                               |
+| `E2E_ACTIVE_PASSWORD`                  | Test-only                      | Synthetic staging test secret if automated setup is authorized |
+| `E2E_INACTIVE_PASSWORD`                | Test-only                      | Synthetic staging test secret if automated setup is authorized |
+| `OPENING_STOCK_OPERATOR_EMAIL`         | Optional operations            | Not needed for synthetic smoke unless import is exercised      |
+| `OPENING_STOCK_OPERATOR_PASSWORD`      | Optional server/process secret | Never expose to browser or Git                                 |
 
 ## Staging infrastructure prerequisites
 

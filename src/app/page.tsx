@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  MessageCircle,
-  Ruler,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, MessageCircle, Ruler } from "lucide-react";
 import { PublicFooter, PublicHeader } from "@/components/public/public-shell";
 import { ProductCard } from "@/components/public/product-card";
-import { publicSiteUrl, StructuredData } from "@/components/public/structured-data";
+import { StructuredData } from "@/components/public/structured-data";
+import { publicSiteUrl } from "@/lib/env/site-url";
 import {
   publicBranches,
   publicCatalogue,
@@ -182,7 +178,9 @@ export default async function HomePage() {
             >
               <Icon className="text-primary" />
               <h2 className="mt-5 text-xl font-black">{String(title)}</h2>
-              <p className="mt-3 leading-7 text-muted-foreground">{String(copy)}</p>
+              <p className="mt-3 leading-7 text-muted-foreground">
+                {String(copy)}
+              </p>
             </div>
           ))}
         </section>

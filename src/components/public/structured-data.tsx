@@ -1,7 +1,5 @@
 type JsonLd = Record<string, unknown> | Record<string, unknown>[];
-
-export const publicSiteUrl = (path = "") =>
-  new URL(path, process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").toString();
+import { publicSiteUrl } from "@/lib/env/site-url";
 
 export function StructuredData({ data }: { data: JsonLd }) {
   const json = JSON.stringify(data)
