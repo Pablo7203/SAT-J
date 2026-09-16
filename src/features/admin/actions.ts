@@ -136,7 +136,7 @@ export async function inviteEmployee(
       target_user_id: data.user.id,
       target_role_id: values.data.roleId,
       target_branch_ids: values.data.branchIds,
-      target_active: true,
+      target_active: false,
     },
   );
   if (configError)
@@ -146,7 +146,11 @@ export async function inviteEmployee(
         "The account was invited but remains inactive because access configuration failed.",
     };
   revalidatePath("/app/admin/users");
-  return { success: true, message: "Employee invited and access configured." };
+  return {
+    success: true,
+    message:
+      "Invitation sent. The employee will appear after setting a password.",
+  };
 }
 
 export async function configureEmployee(formData: FormData) {

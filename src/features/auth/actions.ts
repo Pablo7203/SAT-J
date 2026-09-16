@@ -89,6 +89,15 @@ export async function updatePassword(
       message:
         "The password could not be updated. Request a new recovery link and try again.",
     };
+  const { error: onboardingError } = await supabase.rpc(
+    "complete_employee_onboarding",
+  );
+  if (onboardingError)
+    return {
+      success: false,
+      message:
+        "Your password was saved, but employee access could not be activated. Contact an administrator.",
+    };
   await supabase.auth.signOut();
   redirect("/login?reset=success");
 }

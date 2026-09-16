@@ -19,7 +19,7 @@ In Supabase Auth URL Configuration, set the site URL to the deployed application
 
 ## Employee provisioning
 
-A Super Admin opens **Employees**, enters email/profile details, selects a stable system role and required branches, and confirms the invitation. The server re-verifies `users.manage`, uses the isolated admin client only to invite the Auth user, then configures access through an authorized atomic database function. A branch-scoped account cannot activate without a branch. If delivery/configuration fails, the UI reports it and the default profile remains inactive.
+A Super Admin opens **Employees**, enters email/profile details, selects a stable system role and required branches, and confirms the invitation. The server re-verifies `users.manage`, uses the isolated admin client only to invite the Auth identity, then stores the intended access in an inactive pending profile. Pending invitations are not listed as employees and cannot access the application. After the recipient follows the secure link and successfully sets a password, the database atomically marks onboarding complete and activates the profile. A branch-scoped account cannot activate without a branch. If delivery/configuration fails, the profile remains inactive and hidden.
 
 Activation, deactivation, role changes, and branch assignments use the same confirmed access form. Self-management and removal of the final active Super Admin are blocked in the database.
 

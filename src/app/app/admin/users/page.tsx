@@ -15,8 +15,9 @@ export default async function UsersPage() {
       supabase
         .from("profiles")
         .select(
-          "id, full_name, phone, is_active, role_id, roles(name, code, scope), user_branches(branch_id, is_active, branches(name))",
+          "id, full_name, phone, is_active, role_id, onboarding_completed_at, roles(name, code, scope), user_branches(branch_id, is_active, branches(name))",
         )
+        .not("onboarding_completed_at", "is", null)
         .order("full_name"),
       supabase.from("roles").select("id, name, scope").order("name"),
       supabase
