@@ -36,3 +36,12 @@ export function resolveSiteUrl({
 export function publicSiteUrl(path = ""): string {
   return new URL(path, resolveSiteUrl()).toString();
 }
+
+export function passwordSetupCallbackUrl(
+  options: Parameters<typeof resolveSiteUrl>[0] = {},
+): string {
+  return new URL(
+    "/auth/callback?next=/reset-password",
+    resolveSiteUrl(options),
+  ).toString();
+}

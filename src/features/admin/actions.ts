@@ -8,6 +8,7 @@ import {
 import { requirePermission } from "@/lib/auth/authorization";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { passwordSetupCallbackUrl } from "@/lib/env/site-url";
 
 export type ActionState = { success: boolean; message?: string };
 const branchesFrom = (formData: FormData) =>
@@ -117,7 +118,10 @@ export async function inviteEmployee(
   }
   const { data, error } = await admin.auth.admin.inviteUserByEmail(
     values.data.email,
-    { data: { full_name: values.data.fullName, phone: values.data.phone } },
+    {
+      data: { full_name: values.data.fullName, phone: values.data.phone },
+      redirectTo: passwordSetupCallbackUrl(),
+    },
   );
   if (error || !data.user)
     return {

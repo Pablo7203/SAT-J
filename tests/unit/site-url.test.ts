@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveSiteUrl } from "@/lib/env/site-url";
+import { passwordSetupCallbackUrl, resolveSiteUrl } from "@/lib/env/site-url";
 
 describe("resolveSiteUrl", () => {
   it.each([undefined, "", "   "])(
@@ -36,4 +36,14 @@ describe("resolveSiteUrl", () => {
       );
     },
   );
+});
+
+describe("passwordSetupCallbackUrl", () => {
+  it("routes hosted invitations and recovery links through password setup", () => {
+    expect(
+      passwordSetupCallbackUrl({
+        configuredSiteUrl: "https://staging.example.com",
+      }),
+    ).toBe("https://staging.example.com/auth/callback?next=/reset-password");
+  });
 });
