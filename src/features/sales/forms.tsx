@@ -12,6 +12,7 @@ import {
   type SalesState,
 } from "./actions";
 const initial: SalesState = {};
+const today = () => new Date().toISOString().slice(0, 10);
 const Feedback = ({ state }: { state: SalesState }) =>
   state.error || state.success ? (
     <p
@@ -117,12 +118,14 @@ export function SaleForm({
   variants,
   canOverride,
   canDiscount,
+  canBackdate,
 }: {
   customers: Option[];
   branches: Option[];
   variants: Variant[];
   canOverride: boolean;
   canDiscount: boolean;
+  canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(createSale, initial);
   return (
@@ -159,6 +162,17 @@ export function SaleForm({
         <Label>
           Credit due date
           <Input name="dueDate" type="date" />
+        </Label>
+        <Label>
+          Sale date
+          <Input
+            name="saleDate"
+            type="date"
+            required
+            max={today()}
+            defaultValue={today()}
+            readOnly={!canBackdate}
+          />
         </Label>
         {canDiscount ? (
           <>
@@ -292,10 +306,12 @@ export function CompleteSaleForm({
   saleId,
   total,
   isWalkIn,
+  canBackdate,
 }: {
   saleId: string;
   total: string;
   isWalkIn: boolean;
+  canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(completeSale, initial);
   return (
@@ -332,6 +348,17 @@ export function CompleteSaleForm({
         Payment notes
         <Input name="notes" />
       </Label>
+      <Label>
+        Payment date
+        <Input
+          name="paymentDate"
+          type="date"
+          required
+          max={today()}
+          defaultValue={today()}
+          readOnly={!canBackdate}
+        />
+      </Label>
       <p className="text-sm text-muted-foreground sm:col-span-2">
         Confirming deducts inventory immediately and generates the final
         receipt.
@@ -347,6 +374,7 @@ export function CompleteSaleForm({
 }
 export function CustomerPaymentForm({
   sale,
+  canBackdate,
 }: {
   sale: {
     saleId: string;
@@ -354,6 +382,7 @@ export function CustomerPaymentForm({
     branchId: string;
     balance: string;
   };
+  canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(
     recordCustomerPayment,
@@ -390,6 +419,17 @@ export function CustomerPaymentForm({
       <Label>
         Notes
         <Input name="notes" />
+      </Label>
+      <Label>
+        Payment date
+        <Input
+          name="paymentDate"
+          type="date"
+          required
+          max={today()}
+          defaultValue={today()}
+          readOnly={!canBackdate}
+        />
       </Label>
       <Feedback state={state} />
       <div className="sm:col-span-2">

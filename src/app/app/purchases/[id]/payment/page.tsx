@@ -9,7 +9,7 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requirePermission("supplier_payments.create");
+  const context = await requirePermission("supplier_payments.create");
   const { id } = await params,
     s = await createClient(),
     { data: p } = await s
@@ -26,6 +26,7 @@ export default async function Page({
       />
       <Card>
         <PaymentForm
+          canBackdate={["SUPER_ADMIN", "OWNER"].includes(context.role.code)}
           purchase={{
             purchaseId: id,
             supplierId: p.supplier_id,

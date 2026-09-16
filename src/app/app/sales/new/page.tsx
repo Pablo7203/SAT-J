@@ -72,6 +72,7 @@ export default async function Page() {
           variants={variants}
           canOverride={context.permissions.includes("sales.price_override")}
           canDiscount={context.permissions.includes("sales.discount")}
+          canBackdate={["SUPER_ADMIN", "OWNER"].includes(context.role.code)}
         />
       </Card>
     </div>

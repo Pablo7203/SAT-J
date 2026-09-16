@@ -11,6 +11,7 @@ import {
   type PurchasingState,
 } from "./actions";
 const initial: PurchasingState = {};
+const today = () => new Date().toISOString().slice(0, 10);
 const Feedback = ({ state }: { state: PurchasingState }) =>
   state.error || state.success ? (
     <p
@@ -90,10 +91,12 @@ export function PurchaseForm({
   suppliers,
   branches,
   variants,
+  canBackdate,
 }: {
   suppliers: Option[];
   branches: Option[];
   variants: Option[];
+  canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(createPurchase, initial);
   return (
@@ -133,7 +136,9 @@ export function PurchaseForm({
             type="date"
             name="purchaseDate"
             required
-            defaultValue={new Date().toISOString().slice(0, 10)}
+            max={today()}
+            defaultValue={today()}
+            readOnly={!canBackdate}
           />
         </Label>
         <Label>
@@ -283,6 +288,7 @@ export function ReceiptForm({
 }
 export function PaymentForm({
   purchase,
+  canBackdate,
 }: {
   purchase: {
     purchaseId: string;
@@ -290,6 +296,7 @@ export function PaymentForm({
     branchId: string;
     balance: string;
   };
+  canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(recordPayment, initial);
   return (
@@ -332,7 +339,9 @@ export function PaymentForm({
           name="paymentDate"
           type="date"
           required
-          defaultValue={new Date().toISOString().slice(0, 10)}
+          max={today()}
+          defaultValue={today()}
+          readOnly={!canBackdate}
         />
       </Label>
       <Label>

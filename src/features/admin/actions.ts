@@ -9,6 +9,7 @@ import { requirePermission } from "@/lib/auth/authorization";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { passwordSetupCallbackUrl } from "@/lib/env/site-url";
+import { sendAccessUpdatedEmail } from "@/lib/email/access-notification";
 
 export type ActionState = { success: boolean; message?: string };
 const branchesFrom = (formData: FormData) =>
@@ -163,11 +164,75 @@ export async function configureEmployee(formData: FormData) {
   });
   if (!values.success) return;
   const supabase = await createClient();
-  await supabase.rpc("configure_employee_access", {
+  const { error } = await supabase.rpc("configure_employee_access", {
     target_user_id: values.data.userId,
     target_role_id: values.data.roleId,
     target_branch_ids: values.data.branchIds,
     target_active: values.data.isActive,
   });
+  if (error) return;
+  const [{ data: profile }, { data: role }, { data: branchRows }] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", values.data.userId)
+        .single(),
+      supabase
+        .from("roles")
+        .select("name")
+        .eq("id", values.data.roleId)
+        .single(),
+      values.data.branchIds.length
+        ? supabase
+            .from("branches")
+            .select("name")
+            .in("id", values.data.branchIds)
+            .order("name")
+        : Promise.resolve({ data: [] as { name: string }[] }),
+    ]);
+  try {
+    const { data } = await createAdminClient().auth.admin.getUserById(
+      values.data.userId,
+    );
+    if (data.user?.email)
+      await sendAccessUpdatedEmail({
+        to: data.user.email,
+        employeeName: profile?.full_name ?? "",
+        roleName: role?.name ?? "Updated role",
+        branchNames: (branchRows ?? []).map((branch) => branch.name),
+        isActive: values.data.isActive,
+      });
+  } catch (notificationError) {
+    console.error(
+      "Employee access updated but notification failed",
+      notificationError,
+    );
+  }
   revalidatePath("/app/admin/users");
+}
+
+export async function deleteEmployee(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const context = await requirePermission("users.manage");
+  if (context.role.code !== "SUPER_ADMIN")
+    return { success: false, message: "Only a Super Admin may delete users." };
+  const userId = accessSchema.shape.userId.safeParse(formData.get("userId"));
+  if (!userId.success || userId.data === context.user.id)
+    return { success: false, message: "This employee cannot be deleted." };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("delete_employee_account", {
+    target_user_id: userId.data,
+  });
+  if (error)
+    return {
+      success: false,
+      message: error.message.includes("foreign key")
+        ? "This employee has retained business history. Deactivate the account instead."
+        : "The employee could not be deleted.",
+    };
+  revalidatePath("/app/admin/users");
+  return { success: true, message: "Employee permanently deleted." };
 }

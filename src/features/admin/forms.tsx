@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   createBranch,
+  deleteEmployee,
   inviteEmployee,
   type ActionState,
 } from "@/features/admin/actions";
@@ -124,6 +125,39 @@ export function ConfirmForm({
       }}
     >
       {children}
+    </form>
+  );
+}
+
+export function DeleteEmployeeForm({
+  userId,
+  employeeName,
+}: {
+  userId: string;
+  employeeName: string;
+}) {
+  const [state, action, pending] = useActionState(deleteEmployee, initial);
+  return (
+    <form
+      action={action}
+      onSubmit={(event) => {
+        if (
+          !window.confirm(
+            `Permanently delete ${employeeName}? Accounts with transaction history cannot be deleted and should be deactivated instead.`,
+          )
+        )
+          event.preventDefault();
+      }}
+    >
+      <input type="hidden" name="userId" value={userId} />
+      {state.message ? (
+        <p role="status" className="mt-3 text-sm">
+          {state.message}
+        </p>
+      ) : null}
+      <Button className="mt-3" variant="danger" disabled={pending}>
+        {pending ? "Deleting…" : "Delete employee"}
+      </Button>
     </form>
   );
 }

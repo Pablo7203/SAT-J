@@ -122,6 +122,7 @@ export default async function Page({
             saleId={id}
             total={String(sale.total_amount)}
             isWalkIn={sale.is_walk_in}
+            canBackdate={["SUPER_ADMIN", "OWNER"].includes(context.role.code)}
           />
         </Card>
       ) : null}

@@ -9,6 +9,10 @@ import { createClient } from "@/lib/supabase/server";
 export type PurchasingState = { error?: string; success?: string };
 const uuid = z.string().uuid();
 const message = (raw: string) => {
+  if (raw.includes("Future transaction dates"))
+    return "Transaction dates cannot be in the future.";
+  if (raw.includes("may backdate"))
+    return "Only a Super Admin or Owner may use a previous transaction date.";
   if (raw.includes("remaining ordered"))
     return "You cannot receive more than the remaining ordered quantity.";
   if (raw.includes("outstanding balance"))

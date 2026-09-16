@@ -9,7 +9,7 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requirePermission("customer_payments.create");
+  const context = await requirePermission("customer_payments.create");
   const { id } = await params,
     s = await createClient(),
     { data } = await s
@@ -32,6 +32,7 @@ export default async function Page({
       />
       <Card>
         <CustomerPaymentForm
+          canBackdate={["SUPER_ADMIN", "OWNER"].includes(context.role.code)}
           sale={{
             saleId: id,
             customerId: data.customer_id,

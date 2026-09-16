@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/page-header";
 import { configureEmployee } from "@/features/admin/actions";
-import { ConfirmForm, InviteEmployeeForm } from "@/features/admin/forms";
+import {
+  ConfirmForm,
+  DeleteEmployeeForm,
+  InviteEmployeeForm,
+} from "@/features/admin/forms";
 import { requirePermission } from "@/lib/auth/authorization";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -37,6 +41,7 @@ export default async function UsersPage() {
     /* Email listing requires server admin configuration. */
   }
   const canManage = context.permissions.includes("users.manage");
+  const canDelete = context.role.code === "SUPER_ADMIN";
   return (
     <div className="space-y-8">
       <PageHeader
@@ -155,6 +160,12 @@ export default async function UsersPage() {
                       Update access
                     </Button>
                   </ConfirmForm>
+                ) : null}
+                {canDelete && profile.id !== context.user.id ? (
+                  <DeleteEmployeeForm
+                    userId={profile.id}
+                    employeeName={profile.full_name || "this employee"}
+                  />
                 ) : null}
               </Card>
             );

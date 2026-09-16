@@ -9,6 +9,10 @@ export type SalesState = { error?: string; success?: string };
 const uuid = z.string().uuid();
 const text = (d: FormData, k: string) => String(d.get(k) ?? "");
 const friendly = (raw: string) => {
+  if (raw.includes("Future transaction dates"))
+    return "Transaction dates cannot be in the future.";
+  if (raw.includes("may backdate"))
+    return "Only a Super Admin or Owner may use a previous transaction date.";
   if (raw.includes("not enough stock"))
     return "There is not enough stock at this branch to complete the sale.";
   if (raw.includes("named customer"))
@@ -96,6 +100,7 @@ export async function createSale(
   const { data: id, error } = await client.rpc("create_sale", {
     target_branch: branch.data,
     target_customer: customer.data,
+    sale_on: text(d, "saleDate") || null,
     due_on: text(d, "dueDate") || null,
     sale_notes: text(d, "notes"),
     sale_discount: Number(text(d, "saleDiscount") || 0),
@@ -120,6 +125,7 @@ export async function completeSale(
     method: text(d, "method") || null,
     payment_reference: text(d, "reference"),
     payment_notes: text(d, "notes"),
+    payment_on: text(d, "paymentDate") || null,
   });
   if (error) return { error: friendly(error.message) };
   revalidatePath("/app", "layout");
@@ -144,7 +150,7 @@ export async function recordCustomerPayment(
     payment_amount: Number(text(d, "amount")),
     method: text(d, "method"),
     reference: text(d, "reference"),
-    payment_on: new Date().toISOString(),
+    payment_on: text(d, "paymentDate") || new Date().toISOString(),
     payment_notes: text(d, "notes"),
   });
   if (error) return { error: friendly(error.message) };

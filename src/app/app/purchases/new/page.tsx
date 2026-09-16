@@ -42,6 +42,7 @@ export default async function Page() {
               label: `${v.sku} — ${(v.product as unknown as { name: string }).name} / ${v.name}`,
             })) ?? []
           }
+          canBackdate={["SUPER_ADMIN", "OWNER"].includes(context.role.code)}
         />
       </Card>
     </div>

@@ -49,6 +49,8 @@ Phase 2 introduces a company-wide catalogue. `products` describe a product while
 
 Phase 3 inventory is identified by branch plus product variant. `branch_inventory` is a locked query balance; `stock_movements` is its immutable explanation. Only workflow-specific security-definer functions may call the private movement primitive. They validate permissions, branch access, active records, unit precision, count locks, and non-negative results before updating the balance and ledger atomically. Company totals are derived, never stored. See `inventory.md`.
 
+Business transaction dates are database-authoritative. Super Admin and Owner roles may record missed sales, purchases, and customer or supplier payments using today or an earlier date. Other roles are fixed to today, and future transaction dates are rejected for every role.
+
 ## Validation
 
 Client validation improves usability. Server validation provides security. Database constraints preserve integrity. No business workflow may rely exclusively on the client.

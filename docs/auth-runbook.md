@@ -23,6 +23,8 @@ A Super Admin opens **Employees**, enters email/profile details, selects a stabl
 
 Activation, deactivation, role changes, and branch assignments use the same confirmed access form. Self-management and removal of the final active Super Admin are blocked in the database.
 
+Access changes send the employee an email through Resend when `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are configured. Permanent deletion is restricted to Super Admins. Accounts with retained business history cannot be deleted because transaction attribution is immutable; deactivate those accounts instead.
+
 ## Password recovery and logout
 
 `/forgot-password` always returns a neutral response to prevent email enumeration. Supabase sends the PKCE recovery link, `/auth/callback` exchanges its code, and `/reset-password` updates the credential. Logout ends the Supabase session and redirects to login.
