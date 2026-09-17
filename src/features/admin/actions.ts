@@ -154,6 +154,62 @@ export async function inviteEmployee(
   };
 }
 
+export async function resendEmployeeInvitation(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const context = await requirePermission("users.manage");
+  if (context.role.code !== "SUPER_ADMIN")
+    return {
+      success: false,
+      message: "Only a Super Admin may resend invitations.",
+    };
+  const userId = accessSchema.shape.userId.safeParse(formData.get("userId"));
+  if (!userId.success)
+    return { success: false, message: "Invalid invitation." };
+
+  const supabase = await createClient();
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id,onboarding_completed_at")
+    .eq("id", userId.data)
+    .maybeSingle();
+  if (profileError || !profile || profile.onboarding_completed_at)
+    return {
+      success: false,
+      message: "This invitation is no longer awaiting confirmation.",
+    };
+
+  try {
+    const admin = createAdminClient();
+    const { data: userData, error: userError } =
+      await admin.auth.admin.getUserById(userId.data);
+    if (userError || !userData.user?.email)
+      return {
+        success: false,
+        message: "The invited account could not be found.",
+      };
+    const { error: inviteError } = await admin.auth.admin.inviteUserByEmail(
+      userData.user.email,
+      { redirectTo: passwordSetupCallbackUrl() },
+    );
+    if (inviteError)
+      return {
+        success: false,
+        message:
+          "The invitation could not be resent. Check the email delivery settings and try again.",
+      };
+  } catch {
+    return {
+      success: false,
+      message: "The invitation could not be resent from this server.",
+    };
+  }
+
+  revalidatePath("/app/admin/users");
+  return { success: true, message: "A new invitation email has been sent." };
+}
+
 export async function configureEmployee(formData: FormData) {
   await requirePermission("users.manage");
   const values = accessSchema.safeParse({

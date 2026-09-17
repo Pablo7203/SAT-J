@@ -7,6 +7,7 @@ import {
   createBranch,
   deleteEmployee,
   inviteEmployee,
+  resendEmployeeInvitation,
   type ActionState,
 } from "@/features/admin/actions";
 
@@ -157,6 +158,26 @@ export function DeleteEmployeeForm({
       ) : null}
       <Button className="mt-3" variant="danger" disabled={pending}>
         {pending ? "Deleting…" : "Delete employee"}
+      </Button>
+    </form>
+  );
+}
+
+export function ResendInvitationForm({ userId }: { userId: string }) {
+  const [state, action, pending] = useActionState(
+    resendEmployeeInvitation,
+    initial,
+  );
+  return (
+    <form action={action} className="mt-4">
+      <input type="hidden" name="userId" value={userId} />
+      {state.message ? (
+        <p role="status" className="mb-3 text-sm">
+          {state.message}
+        </p>
+      ) : null}
+      <Button variant="secondary" disabled={pending}>
+        {pending ? "Sending…" : "Resend invitation"}
       </Button>
     </form>
   );

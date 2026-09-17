@@ -21,6 +21,8 @@ In Supabase Auth URL Configuration, set the site URL to the deployed application
 
 A Super Admin opens **Employees**, enters email/profile details, selects a stable system role and required branches, and confirms the invitation. The server re-verifies `users.manage`, uses the isolated admin client only to invite the Auth identity, then stores the intended access in an inactive pending profile. Pending invitations are not listed as employees and cannot access the application. After the recipient follows the secure link and successfully sets a password, the database atomically marks onboarding complete and activates the profile. A branch-scoped account cannot activate without a branch. If delivery/configuration fails, the profile remains inactive and hidden.
 
+For Super Admins, pending profiles appear in a separate **Awaiting confirmation** section, showing the intended role, branches, recipient email, and invitation time. Use **Resend invitation** only when the recipient requests a fresh email or the prior link has expired. A resend uses Supabase Auth's standard invitation email and does not activate the profile or change its intended access.
+
 Activation, deactivation, role changes, and branch assignments use the same confirmed access form. Self-management and removal of the final active Super Admin are blocked in the database.
 
 Access changes send the employee an email through Resend when `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are configured. Permanent deletion is restricted to Super Admins. Accounts with retained business history cannot be deleted because transaction attribution is immutable; deactivate those accounts instead.
