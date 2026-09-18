@@ -13,7 +13,7 @@ export default async function QuotationsPage({
   let query = db
     .from("quotation_requests")
     .select(
-      "id,request_number,name,phone,product_name_snapshot,quantity,status,source,created_at,branch:branches(name)",
+      "id,request_number,name,phone,product_name_snapshot,quantity,status,source,created_at,branch:branches(name),items:quotation_request_items(product_name_snapshot,quantity)",
     )
     .order("created_at", { ascending: false })
     .limit(100);
@@ -87,7 +87,9 @@ export default async function QuotationsPage({
                   <span className="text-muted-foreground">{r.phone}</span>
                 </td>
                 <td className="p-3">
-                  {r.product_name_snapshot ?? "General enquiry"}
+                  {(r.items as unknown as { product_name_snapshot: string; quantity: number | null }[] | null)?.length
+                    ? (r.items as unknown as { product_name_snapshot: string }[]).map((item) => item.product_name_snapshot).join(", ")
+                    : r.product_name_snapshot ?? "General enquiry"}
                 </td>
                 <td className="p-3">
                   {(r.branch as unknown as { name: string } | null)?.name ??

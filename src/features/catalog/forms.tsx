@@ -115,15 +115,18 @@ export function ProductForm({
       </Select>
       <Field name="sku" label="SKU" required />
       <Field name="barcode" label="Barcode (optional)" />
+      <Field name="size" label="Size (optional)" placeholder="e.g. 60 × 60 cm" />
+      <Field name="colour" label="Colour (optional)" placeholder="e.g. Warm white" />
       <Field name="retailPrice" label="Retail price (GHS)" type="number" />
       <Field
         name="wholesalePrice"
         label="Wholesale price (GHS)"
         type="number"
       />
-      <label className="flex items-center gap-2">
-        <input type="checkbox" name="isPublic" /> Publicly visible
-      </label>
+      <p className="sm:col-span-2 rounded-lg bg-secondary p-3 text-sm text-muted-foreground">
+        New products start as internal. Upload at least one product image, then
+        make the product publicly visible from its Edit page.
+      </p>
       <div className="sm:col-span-2">
         {state.message ? (
           <p role="status" className="mb-3 text-sm text-destructive">
@@ -204,7 +207,7 @@ export function ProductImageForm({ productId }: { productId: string }) {
       </Label>
       <Field name="altText" label="Alternative text" />
       <label className="flex items-center gap-2">
-        <input type="checkbox" name="isPrimary" /> Primary product image
+        <input type="checkbox" name="isPrimary" defaultChecked /> Primary product image
       </label>
       <div className="sm:col-span-2">
         {state.message ? (

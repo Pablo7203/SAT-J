@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { formatGhs } from "@/lib/format";
 import { comparison } from "@/lib/reporting";
 
@@ -21,18 +20,20 @@ export function MetricCard({
 }) {
   const delta = prior == null ? null : comparison(value, prior);
   const body = (
-    <Card className="h-full border-l-4 border-l-primary">
-      <p className="text-sm font-medium text-muted-foreground">{label}</p>
-      <p className="mt-2 text-2xl font-bold tracking-tight">
+    <div className="h-full rounded-[14px] border border-border bg-card p-5 tabular-nums">
+      <p className="text-[13px] font-medium text-muted-foreground">{label}</p>
+      <p className="mt-3 text-[28px] font-semibold tracking-[-0.035em] text-foreground">
         {money
           ? formatGhs(value)
           : new Intl.NumberFormat("en-GH", { maximumFractionDigits: 2 }).format(
               value,
             )}
       </p>
-      {context ? <p className="mt-1 text-xs text-muted-foreground">{context}</p> : null}
+      {context ? (
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">{context}</p>
+      ) : null}
       {delta ? (
-        <p className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
+        <p className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
           {delta.percent == null ? (
             <Minus size={14} />
           ) : delta.percent >= 0 ? (
@@ -43,7 +44,7 @@ export function MetricCard({
           {delta.label}
         </p>
       ) : null}
-    </Card>
+    </div>
   );
   return href ? (
     <Link className="block rounded-xl focus-visible:outline" href={href}>
@@ -67,17 +68,21 @@ export function DashboardSection({
   className?: string;
 }) {
   return (
-    <Card className={className}>
+    <section
+      className={`rounded-[14px] border border-border bg-card p-5 sm:p-6 ${className}`}
+    >
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold">{title}</h2>
+          <h2 className="text-[17px] font-semibold tracking-[-0.02em] text-foreground">
+            {title}
+          </h2>
           {description ? (
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           ) : null}
         </div>
         {action ? (
           <Link
-            className="text-sm font-semibold text-primary"
+            className="text-sm font-semibold text-primary hover:text-foreground"
             href={action.href}
           >
             {action.label}
@@ -85,7 +90,7 @@ export function DashboardSection({
         ) : null}
       </div>
       {children}
-    </Card>
+    </section>
   );
 }
 export function TrendChart({
@@ -124,26 +129,26 @@ export function TrendChart({
         <path
           d={path("sales")}
           fill="none"
-          stroke="var(--primary)"
+          stroke="var(--chart-sales)"
           strokeWidth="1.4"
           vectorEffect="non-scaling-stroke"
         />
         <path
           d={path("collections")}
           fill="none"
-          stroke="var(--focus)"
+          stroke="var(--chart-collections)"
           strokeDasharray="3 2"
           strokeWidth="1.4"
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      <div className="flex flex-wrap gap-5 text-sm">
+      <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
         <span>
-          <span className="mr-2 inline-block h-1 w-6 bg-primary" />
+          <span className="mr-2 inline-block h-1 w-6 bg-[var(--chart-sales)]" />
           Sales revenue
         </span>
         <span>
-          <span className="mr-2 inline-block h-1 w-6 bg-focus" />
+          <span className="mr-2 inline-block h-1 w-6 bg-[var(--chart-collections)]" />
           Collections
         </span>
       </div>
@@ -164,9 +169,9 @@ export function RankedBars({
     <ol className="space-y-4">
       {rows.map((row, index) => (
         <li key={`${row.label}-${index}`}>
-          <div className="mb-1 flex justify-between gap-3 text-sm">
+          <div className="mb-2 flex justify-between gap-3 text-sm text-muted-foreground">
             <span className="truncate">
-              <strong>#{index + 1}</strong>{" "}
+              <strong className="mr-2 text-muted-foreground">{index + 1}</strong>
               {row.href ? (
                 <Link className="hover:text-primary" href={row.href}>
                   {row.label}
@@ -175,11 +180,11 @@ export function RankedBars({
                 row.label
               )}
             </span>
-            <strong>
+            <strong className="tabular-nums text-foreground">
               {money ? formatGhs(row.value) : row.value.toLocaleString()}
             </strong>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-secondary">
+          <div className="h-1.5 overflow-hidden rounded-full bg-input">
             <div
               className="h-full rounded-full bg-primary"
               style={{ width: `${Math.max(2, (row.value / max) * 100)}%` }}
@@ -205,10 +210,12 @@ export function StatusGrid({
       {rows.map((row) => {
         const content = (
           <div
-            className={`rounded-lg border-l-4 bg-secondary p-4 ${row.tone === "critical" ? "border-l-destructive" : row.tone === "warning" ? "border-l-warning" : "border-l-primary"}`}
+            className={`rounded-lg border border-border bg-secondary p-4 ${row.tone === "critical" ? "border-l-2 border-l-destructive" : row.tone === "warning" ? "border-l-2 border-l-warning" : "border-l-2 border-l-primary"}`}
           >
-            <p className="text-2xl font-bold">{row.value.toLocaleString()}</p>
-            <p className="text-sm">{row.label}</p>
+            <p className="text-2xl font-semibold tracking-[-0.03em] tabular-nums text-foreground">
+              {row.value.toLocaleString()}
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{row.label}</p>
           </div>
         );
         return row.href ? (

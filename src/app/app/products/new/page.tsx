@@ -23,6 +23,7 @@ export default async function NewProductPage() {
   return (
     <div className="space-y-6">
       <PageHeader
+        backHref="/app/products"
         title="New product"
         description="Create the product and its required default sellable variant atomically."
       />

@@ -18,17 +18,29 @@ async function noPageOverflow(page: Page) {
 test("visitor applies category-derived attributes with same-variant results", async ({ page }, testInfo) => {
   test.skip(!["chromium", "mobile-chromium"].includes(testInfo.project.name), "Desktop and Pixel 7 flow only.");
   await page.goto("/products");
-  await expect(page.getByLabel("E2E Size")).toHaveCount(0);
-  await page.getByLabel("Category").selectOption(category);
+  await expect(page.getByText("E2E Size", { exact: true })).toHaveCount(0);
+  if (testInfo.project.name === "mobile-chromium") {
+    await page.getByRole("button", { name: "Filters" }).click();
+    const drawer = page.getByRole("dialog", { name: "Product filters" });
+    await drawer.getByLabel("Category").selectOption(category);
+    await drawer.getByRole("button", { name: /Show \d+ products/ }).click();
+  } else {
+    await page.getByLabel("Category").selectOption(category);
+    await page.getByRole("button", { name: "Apply filters" }).click();
+  }
   await expect(page).toHaveURL(new RegExp(`category=${category}`));
-  await expect(page.getByLabel("E2E Size")).toBeVisible();
-  await expect(page.getByLabel("E2E Finish")).toBeVisible();
-  await page.getByLabel("E2E Size").selectOption("60x60");
-  await page.getByLabel("E2E Finish").selectOption("gloss");
-  await page.getByRole("button", { name: "Apply filters" }).click();
+  let filters = page.getByRole("complementary");
+  if (testInfo.project.name === "mobile-chromium") {
+    await page.getByRole("button", { name: "Filters" }).click();
+    filters = page.getByRole("dialog", { name: "Product filters" });
+  }
+  await expect(filters.getByRole("radio", { name: "60x60" })).toBeVisible();
+  await expect(filters.getByRole("radio", { name: "Gloss" })).toBeVisible();
+  await filters.getByLabel("60x60").check();
+  await filters.getByLabel("Gloss").check();
+  await filters.getByRole("button", { name: /Apply filters|Show \d+ products/ }).click();
   await expect(page).toHaveURL(/e2e-size=60x60/);
   await expect(page).toHaveURL(/e2e-finish=gloss/);
-  await expect(page.getByText("Filters (3)")).toBeVisible();
   const productLink = page.getByRole("link", { name: /E2E Inventory Tile/ });
   await expect(productLink).toBeVisible();
   await productLink.click();
@@ -93,7 +105,7 @@ test("required public pages fit explicit closure viewports", async ({ page }, te
       await expect(page.locator("main").last()).toBeVisible();
       await noPageOverflow(page);
     }
-    if (viewport.width < 768) {
+    if (viewport.width < 1024) {
       const menu = page.getByRole("button", { name: "Open navigation" });
       await expect(menu).toBeVisible();
       await menu.click();

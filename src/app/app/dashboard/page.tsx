@@ -7,7 +7,6 @@ import {
   StatusGrid,
   TrendChart,
 } from "@/components/dashboard/dashboard-components";
-import { PageHeader } from "@/components/shared/page-header";
 import { requireActiveProfile } from "@/lib/auth/authorization";
 import { defaultReportingRange, validDateRange } from "@/lib/reporting";
 import { createClient } from "@/lib/supabase/server";
@@ -87,24 +86,30 @@ export default async function DashboardPage({
       context.permissions.includes("reports.company.read"),
     suffix = queryString(from, to, branch);
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <PageHeader
-          title={
-            executive
-              ? "Executive dashboard"
+        <div>
+          <p className="text-[13px] text-muted-foreground">
+            {executive
+              ? "Company overview"
               : context.role.code === "BRANCH_MANAGER"
-                ? "Branch dashboard"
+                ? "Branch overview"
                 : salesRole
-                  ? "Sales dashboard"
-                  : "Inventory dashboard"
-          }
-          description={`Operational snapshot for ${from} to ${to} · ${summary.timezone}`}
-        />
+                  ? "Sales overview"
+                  : "Inventory overview"}
+          </p>
+          <h1 className="mt-1 text-[28px] font-semibold tracking-[-0.035em] text-foreground sm:text-[30px]">
+            Good morning, {context.profile.fullName?.split(" ")[0] || "there"}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Here&apos;s what&apos;s happening{" "}
+            {branch ? "at your branch" : "across SAT-J Ent"} today.
+          </p>
+        </div>
         <div className="flex gap-2">
           {context.permissions.includes("sales.create") ? (
             <Link
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white"
+              className="min-h-10 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
               href="/app/sales/new"
             >
               New sale
@@ -112,7 +117,7 @@ export default async function DashboardPage({
           ) : null}
           {context.permissions.includes("purchases.create") ? (
             <Link
-              className="rounded-lg border px-4 py-2 text-sm font-semibold"
+              className="min-h-10 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               href="/app/purchases/new"
             >
               New purchase
@@ -120,30 +125,30 @@ export default async function DashboardPage({
           ) : null}
         </div>
       </div>
-      <form className="grid gap-3 rounded-2xl border bg-surface p-4 shadow-sm sm:grid-cols-4">
-        <label className="text-sm font-medium">
+      <form className="grid gap-3 rounded-[14px] border border-border bg-card p-4 sm:grid-cols-4">
+        <label className="text-sm font-medium text-muted-foreground">
           From
           <input
-            className="mt-1 min-h-11 w-full rounded-lg border px-3"
+            className="mt-2 min-h-11 w-full rounded-lg border border-input bg-secondary px-3 text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
             name="from"
             type="date"
             defaultValue={from}
           />
         </label>
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-muted-foreground">
           To
           <input
-            className="mt-1 min-h-11 w-full rounded-lg border px-3"
+            className="mt-2 min-h-11 w-full rounded-lg border border-input bg-secondary px-3 text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
             name="to"
             type="date"
             defaultValue={to}
           />
         </label>
         {company ? (
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-muted-foreground">
             Branch
             <select
-              className="mt-1 min-h-11 w-full rounded-lg border px-3"
+              className="mt-2 min-h-11 w-full rounded-lg border border-input bg-secondary px-3 text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
               name="branch"
               defaultValue={branch ?? ""}
             >
@@ -158,14 +163,14 @@ export default async function DashboardPage({
             </select>
           </label>
         ) : (
-          <div className="text-sm">
+          <div className="text-sm text-muted-foreground">
             <span className="font-medium">Branch</span>
-            <p className="mt-1 flex min-h-11 items-center rounded-lg bg-secondary px-3">
+            <p className="mt-2 flex min-h-11 items-center rounded-lg bg-secondary px-3 text-foreground">
               {context.accessibleBranches.find((b) => b.id === branch)?.name}
             </p>
           </div>
         )}
-        <button className="min-h-11 self-end rounded-lg bg-primary px-4 font-semibold text-white">
+        <button className="min-h-11 self-end rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover">
           Apply filters
         </button>
       </form>
@@ -236,7 +241,7 @@ export default async function DashboardPage({
           <TrendChart points={summary.trend} />
         </DashboardSection>
       ) : null}
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-5 xl:grid-cols-2">
         {company && summary.branches.length ? (
           <DashboardSection
             title="Branch performance"
@@ -333,9 +338,9 @@ export default async function DashboardPage({
       {summary.inventory?.urgent.length ? (
         <DashboardSection title="Stock requiring attention">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="w-full text-left text-sm text-muted-foreground">
               <thead>
-                <tr className="border-b">
+                <tr className="border-b border-border text-xs font-medium text-muted-foreground">
                   <th className="p-3">Product</th>
                   <th className="p-3">Branch</th>
                   <th className="p-3 text-right">On hand</th>
@@ -344,8 +349,11 @@ export default async function DashboardPage({
               </thead>
               <tbody>
                 {summary.inventory.urgent.map((r) => (
-                  <tr className="border-b" key={r.id}>
-                    <td className="p-3 font-medium">
+                  <tr
+                    className="border-b border-border transition-colors hover:bg-secondary"
+                    key={r.id}
+                  >
+                    <td className="p-3 font-medium text-foreground">
                       {r.product} · {r.variant}
                     </td>
                     <td className="p-3">{r.branch}</td>

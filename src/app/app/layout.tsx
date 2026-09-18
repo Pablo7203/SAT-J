@@ -10,12 +10,13 @@ export default async function InternalAppLayout({
 }) {
   const context = await requireActiveProfile();
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div
+      className="internal-app flex min-h-screen flex-col bg-background text-foreground md:flex-row"
+      data-theme="light"
+    >
       <AppNavigation context={context} />
-      <main className="min-w-0 flex-1">
-        <div className="mx-auto w-full max-w-6xl p-5 sm:p-8 lg:p-10">
-          {children}
-        </div>
+      <main className="min-w-0 flex-1 bg-background">
+        <div className="w-full p-4 sm:p-5 lg:p-7 xl:p-8">{children}</div>
       </main>
     </div>
   );

@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
+import { readFile } from "node:fs/promises";
 import { z } from "zod";
 
 const env = z
   .object({
     NEXT_PUBLIC_SUPABASE_URL: z.url(),
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     E2E_ACTIVE_PASSWORD: z.string().min(12),
     E2E_INACTIVE_PASSWORD: z.string().min(12),
@@ -90,6 +92,17 @@ async function main() {
     },
   ]);
   if (profileError) throw new Error("Could not configure local E2E profiles.");
+  const catalogueAdmin = createClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+  const { error: catalogueLoginError } = await catalogueAdmin.auth.signInWithPassword({
+    email: "super-admin@test.invalid",
+    password: env.E2E_ACTIVE_PASSWORD,
+  });
+  if (catalogueLoginError)
+    throw new Error("Could not authenticate the local Super Admin fixture.");
   const { error: categoryError } = await admin.from("categories").upsert({
     id: "61000000-0000-4000-8000-000000000001",
     name: "E2E Appliances",
@@ -126,14 +139,14 @@ async function main() {
       is_public: true,
     },
   ]);
-  const { error: productError } = await admin.from("products").upsert({
+  const { error: productError } = await catalogueAdmin.from("products").upsert({
     id: "64000000-0000-4000-8000-000000000001",
     name: "E2E Inventory Tile",
     category_id: "61000000-0000-4000-8000-000000000001",
     unit_of_measure_id: "62000000-0000-4000-8000-000000000001",
     status: "DRAFT",
   });
-  const { error: seoProductError } = await admin.from("products").upsert([
+  const { error: seoProductError } = await catalogueAdmin.from("products").upsert([
     {
       id: "64000000-0000-4000-8000-000000000002",
       name: "E2E Hidden Price Tile",
@@ -142,7 +155,7 @@ async function main() {
       category_id: "61000000-0000-4000-8000-000000000001",
       unit_of_measure_id: "62000000-0000-4000-8000-000000000001",
       status: "DRAFT",
-      is_public: true,
+      is_public: false,
       show_price_online: false,
       is_featured: false,
     },
@@ -158,7 +171,7 @@ async function main() {
       is_featured: false,
     },
   ]);
-  const { error: variantError } = await admin.from("product_variants").upsert([
+  const { error: variantError } = await catalogueAdmin.from("product_variants").upsert([
     {
       id: "65000000-0000-4000-8000-000000000001",
       product_id: "64000000-0000-4000-8000-000000000001",
@@ -208,7 +221,43 @@ async function main() {
       is_active: true,
     },
   ]);
-  const { error: activationError } = await admin
+  const e2eImage = await readFile(
+    new URL("../public/images/satj-editorial-hero.png", import.meta.url),
+  );
+  const e2eImagePaths = [
+    "products/64000000-0000-4000-8000-000000000001/e2e-inventory.webp",
+    "products/64000000-0000-4000-8000-000000000002/e2e-hidden-price.webp",
+  ];
+  const { error: storageImageError } = await admin.storage
+    .from("product-images")
+    .upload(e2eImagePaths[0], e2eImage, { contentType: "image/png", upsert: true });
+  const { error: hiddenStorageImageError } = await admin.storage
+    .from("product-images")
+    .upload(e2eImagePaths[1], e2eImage, { contentType: "image/png", upsert: true });
+  const { error: productImageError } = await catalogueAdmin
+    .from("product_images")
+    .upsert(
+      [
+        {
+          id: "6b000000-0000-4000-8000-000000000001",
+          product_id: "64000000-0000-4000-8000-000000000001",
+          storage_path:
+            "products/64000000-0000-4000-8000-000000000001/e2e-inventory.webp",
+          alt_text: "E2E inventory tile",
+          is_primary: true,
+        },
+        {
+          id: "6b000000-0000-4000-8000-000000000002",
+          product_id: "64000000-0000-4000-8000-000000000002",
+          storage_path:
+            "products/64000000-0000-4000-8000-000000000002/e2e-hidden-price.webp",
+          alt_text: "E2E hidden-price tile",
+          is_primary: true,
+        },
+      ],
+      { onConflict: "id" },
+    );
+  const { error: activationError } = await catalogueAdmin
     .from("products")
     .update({
       status: "ACTIVE",
@@ -217,20 +266,28 @@ async function main() {
       is_featured: true,
     })
     .eq("id", "64000000-0000-4000-8000-000000000001");
-  const { error: seoActivationError } = await admin
+  const { error: seoActivationError } = await catalogueAdmin
     .from("products")
     .update({ status: "ACTIVE" })
     .in("id", [
       "64000000-0000-4000-8000-000000000002",
       "64000000-0000-4000-8000-000000000003",
     ]);
+  const { error: seoPublicationError } = await catalogueAdmin
+    .from("products")
+    .update({ is_public: true })
+    .eq("id", "64000000-0000-4000-8000-000000000002");
   if (
     branchError ||
     productError ||
     seoProductError ||
     variantError ||
+    storageImageError ||
+    hiddenStorageImageError ||
+    productImageError ||
     activationError ||
-    seoActivationError
+    seoActivationError ||
+    seoPublicationError
   )
     throw new Error(
       `Could not prepare inventory E2E fixtures: ${[
@@ -238,14 +295,18 @@ async function main() {
         productError,
         seoProductError,
         variantError,
+        storageImageError,
+        hiddenStorageImageError,
+        productImageError,
         activationError,
         seoActivationError,
+        seoPublicationError,
       ]
         .filter(Boolean)
         .map((error) => error!.message)
         .join("; ")}`,
     );
-  const { error: attributeError } = await admin.from("attributes").upsert([
+  const { error: attributeError } = await catalogueAdmin.from("attributes").upsert([
     {
       id: "67000000-0000-4000-8000-000000000001",
       code: "E2E_SIZE",
@@ -261,26 +322,36 @@ async function main() {
       is_active: true,
     },
   ]);
-  const { error: valueError } = await admin.from("attribute_values").upsert([
+  const { error: valueError } = await catalogueAdmin.from("attribute_values").upsert([
     { id: "68000000-0000-4000-8000-000000000001", attribute_id: "67000000-0000-4000-8000-000000000001", value: "60x60", is_active: true },
     { id: "68000000-0000-4000-8000-000000000002", attribute_id: "67000000-0000-4000-8000-000000000001", value: "30x30", is_active: true },
     { id: "68000000-0000-4000-8000-000000000003", attribute_id: "67000000-0000-4000-8000-000000000002", value: "Matte", is_active: true },
     { id: "68000000-0000-4000-8000-000000000004", attribute_id: "67000000-0000-4000-8000-000000000002", value: "Gloss", is_active: true },
   ]);
-  const { error: categoryAttributeError } = await admin.from("category_attributes").upsert([
+  const { error: categoryAttributeError } = await catalogueAdmin.from("category_attributes").upsert([
     { category_id: "61000000-0000-4000-8000-000000000001", attribute_id: "67000000-0000-4000-8000-000000000001", sort_order: 1 },
     { category_id: "61000000-0000-4000-8000-000000000001", attribute_id: "67000000-0000-4000-8000-000000000002", sort_order: 2 },
   ]);
-  const { error: variantAttributeError } = await admin.from("variant_attribute_values").upsert([
+  const { error: variantAttributeError } = await catalogueAdmin.from("variant_attribute_values").upsert([
     { variant_id: "65000000-0000-4000-8000-000000000001", attribute_id: "67000000-0000-4000-8000-000000000001", attribute_value_id: "68000000-0000-4000-8000-000000000001" },
     { variant_id: "65000000-0000-4000-8000-000000000001", attribute_id: "67000000-0000-4000-8000-000000000002", attribute_value_id: "68000000-0000-4000-8000-000000000003" },
     { variant_id: "65000000-0000-4000-8000-000000000002", attribute_id: "67000000-0000-4000-8000-000000000001", attribute_value_id: "68000000-0000-4000-8000-000000000002" },
     { variant_id: "65000000-0000-4000-8000-000000000002", attribute_id: "67000000-0000-4000-8000-000000000002", attribute_value_id: "68000000-0000-4000-8000-000000000004" },
     { variant_id: "65000000-0000-4000-8000-000000000003", attribute_id: "67000000-0000-4000-8000-000000000001", attribute_value_id: "68000000-0000-4000-8000-000000000001" },
     { variant_id: "65000000-0000-4000-8000-000000000003", attribute_id: "67000000-0000-4000-8000-000000000002", attribute_value_id: "68000000-0000-4000-8000-000000000004" },
-  ]);
+  ], { onConflict: "variant_id,attribute_id" });
   if (attributeError || valueError || categoryAttributeError || variantAttributeError)
-    throw new Error("Could not prepare public attribute-filter E2E fixtures.");
+    throw new Error(
+      `Could not prepare public attribute-filter E2E fixtures: ${[
+        attributeError,
+        valueError,
+        categoryAttributeError,
+        variantAttributeError,
+      ]
+        .filter(Boolean)
+        .map((error) => error!.message)
+        .join("; ")}`,
+    );
   const { error: assignmentError } = await admin.from("user_branches").upsert(
     {
       user_id: managerId,
@@ -343,7 +414,7 @@ async function main() {
   ]);
   if (assignmentError || customerError || salesError)
     throw new Error("Could not prepare reporting boundary E2E fixtures.");
-  const { error: priceError } = await admin.from("product_prices").upsert(
+  const { error: priceError } = await catalogueAdmin.from("product_prices").upsert(
     [
       {
         id: "66000000-0000-4000-8000-000000000001",

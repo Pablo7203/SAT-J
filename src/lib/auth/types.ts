@@ -13,6 +13,7 @@ export type PermissionCode =
   | "products.create"
   | "products.update"
   | "products.archive"
+  | "products.delete"
   | "categories.read"
   | "categories.manage"
   | "brands.read"

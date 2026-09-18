@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "127.0.0.1",
-        port: "55321",
+        port: "56321",
         pathname: "/storage/v1/object/sign/product-images/**",
       },
       {

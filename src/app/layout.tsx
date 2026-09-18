@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Serif_Display, Geist, Geist_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { resolveSiteUrl } from "@/lib/env/site-url";
 
@@ -13,6 +13,13 @@ const geist = Geist({
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+  display: "swap",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
+  weight: "400",
   display: "swap",
 });
 
@@ -32,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans",
         geist.variable,
         geistMono.variable,
+        dmSerif.variable,
       )}
     >
       <body className="flex min-h-full flex-col">{children}</body>

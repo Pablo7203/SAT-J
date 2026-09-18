@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { toggleReference } from "./actions";
+import { toggleReference, updateCategory } from "./actions";
 import { ReferenceForm } from "./forms";
 import { requirePermission } from "@/lib/auth/authorization";
 import { createClient } from "@/lib/supabase/server";
@@ -23,6 +23,7 @@ type ReferenceItem = {
   data_type?: string;
   symbol?: string;
   is_active: boolean;
+  parent_id?: string | null;
 };
 export async function ReferencePage({
   kind,
@@ -80,18 +81,26 @@ export async function ReferencePage({
               </span>
             </div>
             {can ? (
-              <form action={toggleReference} className="mt-4">
-                <input type="hidden" name="table" value={table} />
-                <input type="hidden" name="id" value={item.id} />
-                <input
-                  type="hidden"
-                  name="active"
-                  value={String(!item.is_active)}
-                />
-                <Button variant="secondary">
-                  {item.is_active ? "Deactivate" : "Activate"}
-                </Button>
-              </form>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <form action={toggleReference}>
+                  <input type="hidden" name="table" value={table} />
+                  <input type="hidden" name="id" value={item.id} />
+                  <input type="hidden" name="active" value={String(!item.is_active)} />
+                  <Button variant="secondary">{item.is_active ? "Deactivate" : "Activate"}</Button>
+                </form>
+                {kind === "category" ? (
+                  <details className="w-full rounded-lg border bg-secondary/30 p-3">
+                    <summary className="cursor-pointer text-sm font-semibold">Edit category</summary>
+                    <form action={updateCategory} className="mt-4 grid gap-3 sm:grid-cols-2">
+                      <input type="hidden" name="id" value={item.id} />
+                      <label className="text-sm font-semibold">Name<input className="mt-1 min-h-11 w-full rounded-lg border bg-surface px-3 font-normal" defaultValue={item.name} name="name" required /></label>
+                      <label className="text-sm font-semibold">Slug<input className="mt-1 min-h-11 w-full rounded-lg border bg-surface px-3 font-normal" defaultValue={item.slug} name="slug" required /></label>
+                      <label className="text-sm font-semibold sm:col-span-2">Parent<select className="mt-1 min-h-11 w-full rounded-lg border bg-surface px-3 font-normal" defaultValue={item.parent_id ?? ""} name="parentId"><option value="">Top level</option>{(categories ?? []).filter((category) => category.id !== item.id).map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+                      <Button className="w-fit" type="submit">Save category</Button>
+                    </form>
+                  </details>
+                ) : null}
+              </div>
             ) : null}
           </Card>
         ))}

@@ -2,6 +2,110 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+.public-editorial-title {
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-weight: 400;
+}
+
+.internal-app {
+  --surface: #1c201d;
+  --primary: #73907a;
+  --primary-hover: #86a18c;
+  --primary-foreground: #101411;
+  --secondary: #232824;
+  --secondary-foreground: #f1f3ef;
+  --muted: #232824;
+  --muted-foreground: #a4aaa4;
+  --border: #2c312d;
+  --destructive: #d36b61;
+  --success: #8fb398;
+  --warning: #d6a35b;
+  --focus: #9aaf9d;
+  --background: #111412;
+  --foreground: #f1f3ef;
+  --card: #1c201d;
+  --card-foreground: #f1f3ef;
+  --popover: #232824;
+  --popover-foreground: #f1f3ef;
+  --accent: #232824;
+  --accent-foreground: #f1f3ef;
+  --input: #343a35;
+  --ring: #73907a;
+  --app-sidebar: #171a18;
+  --app-nav-text: #f1f3ef;
+  --app-nav-muted: #a4aaa4;
+  --app-nav-label: #737a74;
+  --app-nav-brand: #9aaf9d;
+  --app-nav-divider: rgb(255 255 255 / 0.07);
+  --app-nav-hover: rgb(255 255 255 / 0.045);
+  --app-nav-active: #29362f;
+  --app-nav-active-border: rgb(255 255 255 / 0.05);
+  --app-nav-active-text: #f4f6f2;
+  --chart-sales: #7fa287;
+  --chart-collections: #c0a078;
+  color-scheme: dark;
+}
+
+.internal-app[data-theme="light"] {
+  --surface: #ffffff;
+  --primary: #385846;
+  --primary-hover: #2c4737;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f3ef;
+  --secondary-foreground: #1c271f;
+  --muted: #f1f3ef;
+  --muted-foreground: #607066;
+  --border: #d7ddd5;
+  --destructive: #b7473f;
+  --success: #417b54;
+  --warning: #a76c25;
+  --focus: #385846;
+  --background: #f5f7f3;
+  --foreground: #18221b;
+  --card: #ffffff;
+  --card-foreground: #18221b;
+  --popover: #ffffff;
+  --popover-foreground: #18221b;
+  --accent: #e9eee8;
+  --accent-foreground: #18221b;
+  --input: #cbd4cc;
+  --ring: #385846;
+  --app-sidebar: #ffffff;
+  --app-nav-text: #18221b;
+  --app-nav-muted: #5d6b61;
+  --app-nav-label: #748077;
+  --app-nav-brand: #385846;
+  --app-nav-divider: #dce2dc;
+  --app-nav-hover: #f0f4ef;
+  --app-nav-active: #e1ebe2;
+  --app-nav-active-border: #cedacf;
+  --app-nav-active-text: #1b3323;
+  --chart-sales: #417b54;
+  --chart-collections: #ae7b3f;
+  color-scheme: light;
+}
+
+.internal-app input,
+.internal-app select,
+.internal-app textarea {
+  color-scheme: dark;
+}
+
+.internal-app[data-theme="light"] input,
+.internal-app[data-theme="light"] select,
+.internal-app[data-theme="light"] textarea {
+  color-scheme: light;
+}
+
+.theme-toggle {
+  color: var(--app-nav-muted);
+}
+
+.theme-toggle:hover {
+  background: var(--app-nav-hover);
+  color: var(--app-nav-text);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

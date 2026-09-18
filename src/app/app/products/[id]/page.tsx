@@ -5,6 +5,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   changePrice,
+  deleteProduct,
   deleteProductImage,
   setProductStatus,
 } from "@/features/catalog/actions";
@@ -28,12 +29,29 @@ export default async function ProductPage({
   const { data: p } = await s
     .from("products")
     .select(
-      "id,name,description,status,is_public,category:categories(name),brand:brands(name),unit:units_of_measure(name,code),product_images(id,storage_path,alt_text,is_primary,sort_order),product_variants(id,name,sku,barcode,is_default,is_active,product_prices(id,price_type,amount,currency,effective_from,effective_to,branch:branches(name)))",
+      "id,name,description,size,colour,status,is_public,category:categories(name),brand:brands(name),unit:units_of_measure(name,code),product_images(id,storage_path,alt_text,is_primary,sort_order),product_variants(id,name,sku,barcode,is_default,is_active,product_prices(id,price_type,amount,currency,effective_from,effective_to,branch:branches(name)))",
     )
     .eq("id", id)
     .single();
   if (!p) notFound();
   const variants = p.product_variants ?? [];
+  const canRemoveImage = !p.is_public || (p.product_images?.length ?? 0) > 1;
+  const imagePreviews = await Promise.all(
+    (p.product_images ?? [])
+      .sort(
+        (a, b) =>
+          Number(b.is_primary) - Number(a.is_primary) ||
+          a.sort_order - b.sort_order,
+      )
+      .map(async (image) => ({
+        ...image,
+        url: (
+          await s.storage
+            .from("product-images")
+            .createSignedUrl(image.storage_path, 60 * 60)
+        ).data?.signedUrl,
+      })),
+  );
   const category = related(p.category);
   const brand = related(p.brand);
   const unit = related(p.unit);
@@ -41,6 +59,7 @@ export default async function ProductPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <PageHeader
+          backHref="/app/products"
           title={p.name}
           description={`${category?.name ?? "Uncategorised"} · ${brand?.name ?? "Unbranded"} · ${unit?.code ?? ""}`}
         />
@@ -56,6 +75,15 @@ export default async function ProductPage({
               <input type="hidden" name="id" value={id} />
               <input type="hidden" name="status" value="ARCHIVED" />
               <Button variant="danger">Archive</Button>
+            </form>
+          ) : null}
+          {context.permissions.includes("products.delete") &&
+          p.status === "DRAFT" &&
+          !p.is_public ? (
+            <form action={deleteProduct} className="flex items-center gap-2">
+              <input type="hidden" name="id" value={id} />
+              <input type="hidden" name="confirmDelete" value="yes" />
+              <Button variant="danger">Delete draft</Button>
             </form>
           ) : null}
         </div>
@@ -76,32 +104,44 @@ export default async function ProductPage({
           </p>
         </Card>
       </div>
+      <Card>
+        <h2 className="font-bold">Product details</h2>
+        <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-muted-foreground">Size</dt>
+            <dd className="mt-1 font-semibold">{p.size || "Not specified"}</dd>
+          </div>
+          <div>
+            <dt className="text-muted-foreground">Colour</dt>
+            <dd className="mt-1 font-semibold">{p.colour || "Not specified"}</dd>
+          </div>
+        </dl>
+      </Card>
       <section>
         <h2 className="mb-3 text-xl font-bold">Product images</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {p.product_images
-            ?.sort(
-              (a, b) =>
-                Number(b.is_primary) - Number(a.is_primary) ||
-                a.sort_order - b.sort_order,
-            )
-            .map((image) => {
-              const url = s.storage
-                .from("product-images")
-                .getPublicUrl(image.storage_path).data.publicUrl;
+          {imagePreviews.map((image) => {
+              const url = image.url;
               return (
                 <Card key={image.id}>
-                  <img
-                    src={url}
-                    alt={image.alt_text ?? p.name}
-                    className="aspect-square w-full rounded-lg object-cover"
-                  />
+                  {url ? (
+                    <img
+                      src={url}
+                      alt={image.alt_text ?? p.name}
+                      className="aspect-square w-full rounded-lg object-cover"
+                    />
+                  ) : (
+                    <p className="grid aspect-square place-items-center rounded-lg bg-secondary p-4 text-center text-sm text-muted-foreground">
+                      Image preview is unavailable. Try uploading the image again.
+                    </p>
+                  )}
                   {image.is_primary ? (
                     <p className="mt-2 text-xs font-semibold text-primary">
                       Primary image
                     </p>
                   ) : null}
-                  {context.permissions.includes("product_images.manage") ? (
+                  {context.permissions.includes("product_images.manage") &&
+                  canRemoveImage ? (
                     <form action={deleteProductImage} className="mt-2">
                       <input type="hidden" name="productId" value={id} />
                       <input type="hidden" name="imageId" value={image.id} />
@@ -112,6 +152,12 @@ export default async function ProductPage({
               );
             })}
         </div>
+        {p.is_public && (p.product_images?.length ?? 0) === 1 ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            This is the last image on a public product. Make the product
+            internal before removing it.
+          </p>
+        ) : null}
         {context.permissions.includes("product_images.manage") ? (
           <Card className="mt-4">
             <ProductImageForm productId={id} />

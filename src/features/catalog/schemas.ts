@@ -23,6 +23,8 @@ export const productSchema = z.object({
     (value) => (value === "" ? undefined : value),
     z.coerce.number().min(0).optional(),
   ),
+  size: z.string().trim().max(160),
+  colour: z.string().trim().max(160),
 });
 export const referenceSchema = z.object({
   kind: z.enum(["category", "brand", "unit", "attribute"]),

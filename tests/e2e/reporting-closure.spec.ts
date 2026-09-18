@@ -56,7 +56,7 @@ test("reporting surfaces remain usable at 768 by 1024", async ({
   await login(page, "super-admin@test.invalid");
   await page.goto(`/app/dashboard?${range}`);
   await expect(
-    page.getByRole("heading", { name: "Executive dashboard" }),
+    page.getByRole("heading", { name: /Good morning/i }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Sales and collections trend" }),

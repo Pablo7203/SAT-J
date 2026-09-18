@@ -54,6 +54,8 @@ export type PublicProduct = {
   category: { name: string; slug: string };
   brand: string | null;
   unit: string;
+  size: string | null;
+  colour: string | null;
   show_price_online: boolean;
   images: {
     path: string;
@@ -107,6 +109,13 @@ export async function publicBranches() {
   if (error) throw error;
   return (data ?? []) as PublicBranch[];
 }
+export async function publicQuoteProducts() {
+  const { data, error } = await (await createClient()).rpc(
+    "public_quote_products",
+  );
+  if (error) throw error;
+  return (data ?? []) as { id: string; name: string; category: string }[];
+}
 export async function publicBrands() {
   const { data, error } = await (await createClient()).rpc("public_brands");
   if (error) throw error;
@@ -151,6 +160,19 @@ export async function publicCatalogue(
     })),
   );
   return result;
+}
+export async function publicBestSellers(size = 4) {
+  const { data, error } = await (await createClient()).rpc(
+    "public_best_sellers",
+    { item_limit: size },
+  );
+  if (error) throw error;
+  return Promise.all(
+    ((data ?? []) as PublicProductCard[]).map(async (product) => ({
+      ...product,
+      image_url: await sign(product.image_path),
+    })),
+  );
 }
 export async function publicProduct(slug: string) {
   const { data, error } = await (

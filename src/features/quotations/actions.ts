@@ -11,9 +11,7 @@ const schema = z.object({
   phone: z.string().trim().min(5).max(40),
   email: z.string().trim().email().or(z.literal("")),
   company: z.string().trim().max(160),
-  productId: z.string().uuid().or(z.literal("")),
-  variantId: z.string().uuid().or(z.literal("")),
-  quantity: z.coerce.number().positive().optional().or(z.literal("")),
+  productItems: z.string().max(8000),
   branchId: z.string().uuid().or(z.literal("")),
   message: z.string().trim().max(2000),
   website: z.string().max(0),
@@ -30,19 +28,31 @@ export async function submitQuote(
         parsed.error.issues[0]?.message ?? "Check the quotation details.",
     };
   const v = parsed.data;
+  let productItems: { product_id: string; quantity: string }[] = [];
+  try {
+    const candidate: unknown = JSON.parse(v.productItems || "[]");
+    productItems = z
+      .array(
+        z.object({
+          product_id: z.string().uuid(),
+          quantity: z.string().max(40),
+        }),
+      )
+      .max(20)
+      .parse(candidate);
+  } catch {
+    return { success: false, message: "Check the selected products." };
+  }
   const { data: number, error } = await (
     await createClient()
-  ).rpc("submit_quotation", {
+  ).rpc("submit_quotation_request", {
     visitor_name: v.name,
     visitor_phone: v.phone,
     visitor_email: v.email || null,
     visitor_company: v.company || null,
-    target_product: v.productId || null,
-    target_variant: v.variantId || null,
-    requested_quantity: v.quantity || null,
+    product_items: productItems,
     target_branch: v.branchId || null,
     visitor_message: v.message || null,
-    request_source: v.productId ? "PRODUCT" : "GENERAL_QUOTE",
     honey: v.website,
   });
   if (error)

@@ -14,7 +14,7 @@ export default async function QuotationPage({
       await createClient()
     )
       .from("quotation_requests")
-      .select("*,branch:branches(name)")
+      .select("*,branch:branches(name),items:quotation_request_items(product_name_snapshot,quantity)")
       .eq("id", id)
       .maybeSingle();
   if (!q) notFound();
@@ -57,22 +57,23 @@ export default async function QuotationPage({
         <section className="rounded-2xl border bg-surface p-6">
           <h2 className="text-lg font-bold">Request</h2>
           <dl className="mt-5 grid gap-4 text-sm">
-            <div>
-              <dt className="text-muted-foreground">Product</dt>
-              <dd>{q.product_name_snapshot ?? "General project request"}</dd>
-            </div>
-            {q.variant_name_snapshot ? (
+            {(q.items as unknown as { product_name_snapshot: string; quantity: number | null }[] | null)?.length ? (
               <div>
-                <dt className="text-muted-foreground">Variant</dt>
-                <dd>{q.variant_name_snapshot}</dd>
+                <dt className="text-muted-foreground">Products requested</dt>
+                <dd className="mt-2 grid gap-2">
+                  {(q.items as unknown as { product_name_snapshot: string; quantity: number | null }[]).map((item) => (
+                    <span key={item.product_name_snapshot}>
+                      {item.product_name_snapshot}{item.quantity ? ` - Quantity: ${item.quantity}` : ""}
+                    </span>
+                  ))}
+                </dd>
               </div>
-            ) : null}
-            {q.quantity ? (
+            ) : (
               <div>
-                <dt className="text-muted-foreground">Quantity</dt>
-                <dd>{q.quantity}</dd>
+                <dt className="text-muted-foreground">Product</dt>
+                <dd>{q.product_name_snapshot ?? "General project request"}</dd>
               </div>
-            ) : null}
+            )}
             <div>
               <dt className="text-muted-foreground">Preferred branch</dt>
               <dd>

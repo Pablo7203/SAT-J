@@ -28,7 +28,7 @@ export default async function EditProductPage({
       s
         .from("products")
         .select(
-          "*,product_variants(id,name,sku,barcode,is_active,is_default,variant_attribute_values(attribute_id,attribute_value_id,text_value,number_value,boolean_value))",
+          "*,product_images(id),product_variants(id,name,sku,barcode,is_active,is_default,variant_attribute_values(attribute_id,attribute_value_id,text_value,number_value,boolean_value))",
         )
         .eq("id", id)
         .single(),
@@ -37,6 +37,7 @@ export default async function EditProductPage({
       s.from("units_of_measure").select("id,name,code,is_active").order("name"),
     ]);
   if (!p) notFound();
+  const hasProductImage = (p.product_images?.length ?? 0) > 0;
   const { data: mappings } = await s
     .from("category_attributes")
     .select(
@@ -47,6 +48,7 @@ export default async function EditProductPage({
   return (
     <div className="space-y-6">
       <PageHeader
+        backHref={`/app/products/${id}`}
         title={`Edit ${p.name}`}
         description="Reference records in use remain visible even when inactive."
       />
@@ -116,14 +118,44 @@ export default async function EditProductPage({
               className="mt-1 w-full rounded-lg border bg-surface p-3"
             />
           </Label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="isPublic"
-              defaultChecked={p.is_public}
-            />{" "}
-            Publicly visible
-          </label>
+          <Label>
+            Size
+            <Input
+              className="mt-1"
+              name="size"
+              defaultValue={p.size ?? ""}
+              placeholder="e.g. 60 × 60 cm"
+            />
+          </Label>
+          <Label>
+            Colour
+            <Input
+              className="mt-1"
+              name="colour"
+              defaultValue={p.colour ?? ""}
+              placeholder="e.g. Warm white"
+            />
+          </Label>
+          <div>
+            {hasProductImage ? (
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="isPublic"
+                  defaultChecked={p.is_public}
+                />{" "}
+                Publicly visible
+              </label>
+            ) : (
+              <>
+                <input name="isPublic" type="hidden" value="false" />
+                <p className="text-sm text-muted-foreground">
+                  Upload a product image before publishing this product to the
+                  website.
+                </p>
+              </>
+            )}
+          </div>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"

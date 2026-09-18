@@ -20,12 +20,21 @@ test("active employee logs in, sees the protected shell, and logs out", async ({
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(/\/app(?:\/dashboard)?$/);
   await expect(
-    page.getByRole("heading", { name: "Executive dashboard" }),
+    page.getByRole("heading", { name: /Good morning/i }),
   ).toBeVisible();
-  const signOut = page.getByRole("button", { name: "Sign out" }).first();
-  if (!(await signOut.isVisible()))
+  const desktopSignOut = page
+    .locator("aside")
+    .getByRole("button", { name: "Sign out" });
+  if (await desktopSignOut.isVisible()) {
+    await desktopSignOut.click();
+  } else {
     await page.getByLabel("Open navigation").click();
-  await signOut.click();
+    await page
+      .getByRole("navigation", { name: "Mobile application navigation" })
+      .locator("xpath=..")
+      .getByRole("button", { name: "Sign out" })
+      .click();
+  }
   await expect(page).toHaveURL(/\/login$/);
 });
 

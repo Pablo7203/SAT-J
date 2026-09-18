@@ -25,12 +25,14 @@ export async function createProduct(
     brandId: data.get("brandId") ?? "",
     unitId: data.get("unitId"),
     status: data.get("status"),
-    isPublic: data.get("isPublic") === "on",
+    isPublic: false,
     variantName: data.get("variantName"),
     sku: data.get("sku"),
     barcode: data.get("barcode") ?? "",
     retailPrice: data.get("retailPrice") ?? "",
     wholesalePrice: data.get("wholesalePrice") ?? "",
+    size: data.get("size") ?? "",
+    colour: data.get("colour") ?? "",
   });
   if (!parsed.success)
     return fail(
@@ -56,6 +58,11 @@ export async function createProduct(
     },
   );
   if (error || !productId) return fail(messageFor(error));
+  await supabase.rpc("set_new_product_details", {
+    target_product_id: productId,
+    product_size: v.size || null,
+    product_colour: v.colour || null,
+  });
   revalidatePath("/app/products");
   redirect(`/app/products/${productId}`);
 }
@@ -65,6 +72,14 @@ export async function updateProduct(data: FormData) {
   const id = idSchema.safeParse(data.get("id"));
   if (!id.success) return;
   const supabase = await createClient();
+  const isPublic = data.get("isPublic") === "on";
+  if (isPublic) {
+    const { count, error: imageError } = await supabase
+      .from("product_images")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", id.data);
+    if (imageError || !count) return;
+  }
   await supabase
     .from("products")
     .update({
@@ -73,13 +88,17 @@ export async function updateProduct(data: FormData) {
       category_id: data.get("categoryId"),
       brand_id: data.get("brandId") || null,
       unit_of_measure_id: data.get("unitId"),
-      is_public: data.get("isPublic") === "on",
+      size: String(data.get("size") ?? "").trim() || null,
+      colour: String(data.get("colour") ?? "").trim() || null,
+      is_public: isPublic,
       show_price_online: data.get("showPriceOnline") === "on",
       is_featured: data.get("isFeatured") === "on",
     })
     .eq("id", id.data);
   revalidatePath(`/app/products/${id.data}`);
   revalidatePath("/app/products");
+  revalidatePath("/products");
+  redirect(`/app/products/${id.data}`);
 }
 
 export async function setProductStatus(data: FormData) {
@@ -185,6 +204,51 @@ export async function toggleReference(data: FormData) {
   revalidatePath("/app/catalog", "layout");
 }
 
+export async function updateCategory(data: FormData) {
+  await requirePermission("categories.manage");
+  const id = idSchema.safeParse(data.get("id"));
+  const parsed = referenceSchema.safeParse({
+    kind: "category",
+    name: data.get("name"),
+    code: "",
+    slug: data.get("slug"),
+    parentId: data.get("parentId") ?? "",
+    symbol: "",
+    dataType: "TEXT",
+  });
+  if (!id.success || !parsed.success) return;
+  const category = parsed.data;
+  if (category.parentId === id.data) return;
+  const { error } = await (await createClient())
+    .from("categories")
+    .update({
+      name: category.name,
+      slug: category.slug,
+      parent_id: category.parentId,
+    })
+    .eq("id", id.data);
+  if (error) return;
+  revalidatePath("/app/catalog", "layout");
+  revalidatePath("/products");
+  revalidatePath("/");
+}
+
+export async function deleteProduct(data: FormData) {
+  await requirePermission("products.delete");
+  const id = idSchema.safeParse(data.get("id"));
+  if (!id.success || data.get("confirmDelete") !== "yes") return;
+  const s = await createClient();
+  const { data: paths, error } = await s.rpc("delete_unused_product", {
+    target_product_id: id.data,
+  });
+  if (error) return;
+  if (paths?.length) await s.storage.from("product-images").remove(paths);
+  revalidatePath("/app/products");
+  revalidatePath("/products");
+  revalidatePath("/");
+  redirect("/app/products");
+}
+
 const imageTypes = new Map([
   ["image/jpeg", "jpg"],
   ["image/png", "png"],
@@ -209,6 +273,17 @@ export async function uploadProductImage(
     .from("product-images")
     .upload(path, file, { contentType: file.type, upsert: false });
   if (uploadError) return fail(messageFor(uploadError));
+  if (data.get("isPrimary") === "on") {
+    const { error: primaryError } = await s
+      .from("product_images")
+      .update({ is_primary: false })
+      .eq("product_id", productId.data)
+      .eq("is_primary", true);
+    if (primaryError) {
+      await s.storage.from("product-images").remove([path]);
+      return fail(messageFor(primaryError));
+    }
+  }
   const { error } = await s.from("product_images").insert({
     product_id: productId.data,
     storage_path: path,
@@ -220,6 +295,7 @@ export async function uploadProductImage(
     return fail(messageFor(error));
   }
   revalidatePath(`/app/products/${productId.data}`);
+  revalidatePath("/products");
   return { success: true, message: "Image uploaded." };
 }
 export async function deleteProductImage(data: FormData) {
@@ -235,6 +311,14 @@ export async function deleteProductImage(data: FormData) {
     .eq("product_id", productId.data)
     .single();
   if (!image?.storage_path.startsWith(`products/${productId.data}/`)) return;
+  const [{ data: product }, { count: imageCount }] = await Promise.all([
+    s.from("products").select("is_public").eq("id", productId.data).single(),
+    s
+      .from("product_images")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", productId.data),
+  ]);
+  if (product?.is_public && (imageCount ?? 0) <= 1) return;
   const { error } = await s.storage
     .from("product-images")
     .remove([image.storage_path]);
@@ -245,6 +329,7 @@ export async function deleteProductImage(data: FormData) {
     .eq("id", imageId.data)
     .eq("product_id", productId.data);
   revalidatePath(`/app/products/${productId.data}`);
+  revalidatePath("/products");
 }
 
 export async function addVariant(data: FormData) {

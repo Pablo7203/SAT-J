@@ -64,3 +64,6 @@ next-env.d.ts
 *.sql.gz
 *.tar.gz
 *.zip
+
+.vercel
+.env*
