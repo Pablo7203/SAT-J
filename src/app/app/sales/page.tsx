@@ -36,7 +36,7 @@ export default async function Page({
   ]);
   return (
     <div className="space-y-6">
-      <div className="flex justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <PageHeader
           title="Sales"
           description="Branch sales, payment state, receipts, and inventory traceability."

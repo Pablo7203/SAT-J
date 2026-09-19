@@ -31,7 +31,7 @@ export default async function Page({
     .range((page - 1) * size, page * size - 1);
   return (
     <div className="space-y-6">
-      <div className="flex justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <PageHeader
           title="Customers"
           description="Company customer master and authorized-branch receivable balances."
