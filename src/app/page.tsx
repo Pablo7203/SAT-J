@@ -220,7 +220,7 @@ export default async function HomePage() {
                 View all products <ArrowRight size={16} />
               </Link>
             </div>
-            <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 lg:grid-cols-4">
               {catalogueShowcase.items.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
