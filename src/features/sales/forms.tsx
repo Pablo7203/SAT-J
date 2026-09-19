@@ -1,5 +1,6 @@
 "use client";
-import { useActionState } from "react";
+import { Plus } from "lucide-react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,6 +107,7 @@ export function CustomerForm({
   );
 }
 type Option = { id: string; label: string };
+type CustomerOption = Option & { isWalkIn: boolean };
 type Variant = Option & {
   stock: string;
   unit: string;
@@ -120,7 +122,7 @@ export function SaleForm({
   canDiscount,
   canBackdate,
 }: {
-  customers: Option[];
+  customers: CustomerOption[];
   branches: Option[];
   variants: Variant[];
   canOverride: boolean;
@@ -128,6 +130,12 @@ export function SaleForm({
   canBackdate: boolean;
 }) {
   const [state, action, pending] = useActionState(createSale, initial);
+  const [customerId, setCustomerId] = useState(customers[0]?.id ?? "");
+  const [itemRows, setItemRows] = useState([0]);
+  const selectedCustomer = customers.find(
+    (customer) => customer.id === customerId,
+  );
+  const isWalkIn = selectedCustomer?.isWalkIn ?? false;
   return (
     <form action={action} className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -151,6 +159,8 @@ export function SaleForm({
             name="customerId"
             required
             className="mt-1 min-h-11 w-full rounded-lg border bg-surface px-3"
+            onChange={(event) => setCustomerId(event.target.value)}
+            value={customerId}
           >
             {customers.map((x) => (
               <option key={x.id} value={x.id}>
@@ -161,7 +171,12 @@ export function SaleForm({
         </Label>
         <Label>
           Credit due date
-          <Input name="dueDate" type="date" />
+          <Input disabled={isWalkIn} name="dueDate" type="date" />
+          {isWalkIn ? (
+            <span className="mt-1 block text-xs font-normal text-muted-foreground">
+              Walk-in sales must be paid in full.
+            </span>
+          ) : null}
         </Label>
         <Label>
           Sale date
@@ -197,7 +212,7 @@ export function SaleForm({
       </div>
       <fieldset className="space-y-3">
         <legend className="font-semibold">Sale items</legend>
-        {[0, 1, 2, 3, 4].map((i) => (
+        {itemRows.map((i) => (
           <div className="rounded-lg border p-3" key={i}>
             <div className="grid gap-2 md:grid-cols-4">
               <select
@@ -276,6 +291,16 @@ export function SaleForm({
             )}
           </div>
         ))}
+        <Button
+          onClick={() =>
+            setItemRows((rows) => [...rows, Math.max(...rows, -1) + 1])
+          }
+          type="button"
+          variant="secondary"
+        >
+          <Plus aria-hidden="true" className="size-4" />
+          Add another item
+        </Button>
       </fieldset>
       <Area name="notes" label="Sale notes" />
       <p className="text-sm text-muted-foreground">

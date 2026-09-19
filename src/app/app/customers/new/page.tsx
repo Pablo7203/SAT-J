@@ -7,6 +7,7 @@ export default async function Page() {
   return (
     <div className="space-y-6">
       <PageHeader
+        backHref="/app/customers"
         title="Add customer"
         description="Use a named customer for partial-payment and credit sales."
       />

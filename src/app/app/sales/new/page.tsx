@@ -64,6 +64,7 @@ export default async function Page() {
             customers?.map((x) => ({
               id: x.id,
               label: `${x.is_walk_in ? "★ " : ""}${x.customer_code} — ${x.name}`,
+              isWalkIn: x.is_walk_in,
             })) ?? []
           }
           branches={context.accessibleBranches

@@ -43,8 +43,9 @@ export default async function Page({
   if (!c) notFound();
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <PageHeader
+          backHref="/app/customers"
           title={`${c.customer_code} · ${c.name}`}
           description={`${c.is_walk_in ? "Protected system customer" : c.is_active ? "Active customer" : "Archived customer"} · Outstanding ${formatGhs(balance?.outstanding_balance ?? 0)}`}
         />
@@ -53,6 +54,7 @@ export default async function Page({
             {context.permissions.includes("customers.update") ? (
               <ButtonLink
                 href={`/app/customers/${id}/edit`}
+                size="compact"
                 variant="secondary"
               >
                 Edit

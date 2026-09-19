@@ -51,7 +51,10 @@ export async function saveCustomer(
     ? await client.rpc("update_customer", { target_customer: id, ...args })
     : await client.rpc("create_customer", args);
   if (result.error) return { error: friendly(result.error.message) };
-  redirect(`/app/customers/${id || result.data}`);
+  const customerId = id || result.data;
+  revalidatePath("/app/customers");
+  revalidatePath(`/app/customers/${customerId}`);
+  redirect(`/app/customers/${customerId}`);
 }
 export async function toggleCustomer(d: FormData) {
   await requirePermission("customers.archive");
@@ -97,11 +100,16 @@ export async function createSale(
   if (!branch.success || !customer.success || !items.length)
     return { error: "Choose a branch, customer, and at least one item." };
   const client = await createClient();
+  const { data: customerRecord } = await client
+    .from("customers")
+    .select("is_walk_in")
+    .eq("id", customer.data)
+    .maybeSingle();
   const { data: id, error } = await client.rpc("create_sale", {
     target_branch: branch.data,
     target_customer: customer.data,
     sale_on: text(d, "saleDate") || null,
-    due_on: text(d, "dueDate") || null,
+    due_on: customerRecord?.is_walk_in ? null : text(d, "dueDate") || null,
     sale_notes: text(d, "notes"),
     sale_discount: Number(text(d, "saleDiscount") || 0),
     discount_reason: text(d, "saleDiscountReason"),

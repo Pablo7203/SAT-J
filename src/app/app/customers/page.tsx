@@ -17,22 +17,36 @@ export default async function Page({
     page = Math.max(1, Number(q.page) || 1),
     size = 25,
     s = await createClient();
-  let request = s
-    .from("customers")
-    .select("*,customer_balances(outstanding_balance)", { count: "exact" });
+  let request = s.from("customers").select("*", { count: "exact" });
   if (q.q)
     request = request.or(
       `name.ilike.%${q.q}%,customer_code.ilike.%${q.q}%,phone.ilike.%${q.q}%,email.ilike.%${q.q}%`,
     );
   if (q.status) request = request.eq("is_active", q.status === "active");
-  const { data, count } = await request
-    .order("is_walk_in", { ascending: false })
-    .order("name")
-    .range((page - 1) * size, page * size - 1);
+  const [{ data, count, error }, { data: balances, error: balancesError }] =
+    await Promise.all([
+      request
+        .order("is_walk_in", { ascending: false })
+        .order("name")
+        .range((page - 1) * size, page * size - 1),
+      s.from("customer_balances").select("customer_id,outstanding_balance"),
+    ]);
+  if (error) throw new Error(`Unable to load customers: ${error.message}`);
+  if (balancesError)
+    throw new Error(
+      `Unable to load customer balances: ${balancesError.message}`,
+    );
+  const balanceByCustomer = new Map(
+    (balances ?? []).map((balance) => [
+      balance.customer_id,
+      Number(balance.outstanding_balance ?? 0),
+    ]),
+  );
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-3">
         <PageHeader
+          backHref="/app/dashboard"
           title="Customers"
           description="Company customer master and authorized-branch receivable balances."
         />
@@ -77,16 +91,7 @@ export default async function Page({
               </strong>
               <span>{String(x.customer_type).replaceAll("_", " ")}</span>
               <span>{x.phone || "—"}</span>
-              <span>
-                {formatGhs(
-                  Number(
-                    (
-                      x.customer_balances as unknown as
-                        { outstanding_balance: number }[] | null
-                    )?.[0]?.outstanding_balance ?? 0,
-                  ),
-                )}
-              </span>
+              <span>{formatGhs(balanceByCustomer.get(x.id) ?? 0)}</span>
               <span>
                 {x.is_walk_in
                   ? "System Walk-In"

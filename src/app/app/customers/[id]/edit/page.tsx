@@ -16,7 +16,10 @@ export default async function Page({
   if (!data || data.is_walk_in) notFound();
   return (
     <div className="space-y-6">
-      <PageHeader title={`Edit ${data.name}`} />
+      <PageHeader
+        backHref={`/app/customers/${id}`}
+        title={`Edit ${data.name}`}
+      />
       <Card>
         <CustomerForm customer={data} />
       </Card>
