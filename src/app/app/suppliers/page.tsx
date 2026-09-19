@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Truck } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -35,7 +36,14 @@ export default async function Page({
           description="Supplier master data and outstanding purchasing balances."
         />
         {context.permissions.includes("suppliers.create") ? (
-          <ButtonLink href="/app/suppliers/new">Add supplier</ButtonLink>
+          <ButtonLink
+            className="shrink-0 shadow-[0_8px_18px_rgb(0_0_0_/_0.14)] hover:-translate-y-px hover:shadow-[0_12px_24px_rgb(0_0_0_/_0.18)]"
+            href="/app/suppliers/new"
+            size="compact"
+          >
+            <Truck aria-hidden="true" className="size-4" />
+            Add supplier
+          </ButtonLink>
         ) : null}
       </div>
       <Card>

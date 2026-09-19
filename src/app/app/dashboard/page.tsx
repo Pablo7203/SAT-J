@@ -1,13 +1,22 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  BadgeCheck,
+  CircleDollarSign,
+  PackageSearch,
+  ReceiptText,
+  Truck,
+} from "lucide-react";
+import {
+  DashboardTicker,
   DashboardSection,
   MetricCard,
   RankedBars,
   StatusGrid,
   TrendChart,
 } from "@/components/dashboard/dashboard-components";
+import { ButtonLink } from "@/components/ui/button";
 import { requireActiveProfile } from "@/lib/auth/authorization";
+import { formatGhs } from "@/lib/format";
 import { defaultReportingRange, validDateRange } from "@/lib/reporting";
 import { createClient } from "@/lib/supabase/server";
 
@@ -84,7 +93,44 @@ export default async function DashboardPage({
     reportAccess =
       context.permissions.includes("reports.branch.read") ||
       context.permissions.includes("reports.company.read"),
-    suffix = queryString(from, to, branch);
+    suffix = queryString(from, to, branch),
+    tickerItems = [
+      ...(!inventoryRole
+        ? [
+            {
+              icon: <CircleDollarSign aria-hidden="true" className="size-4" />,
+              label: "Sales revenue",
+              value: formatGhs(n(summary.kpis.sales_revenue)),
+              href: reportAccess
+                ? `/app/reports/sales?${suffix}`
+                : "/app/sales",
+            },
+            {
+              icon: <BadgeCheck aria-hidden="true" className="size-4" />,
+              label: "Completed sales",
+              value: n(summary.kpis.sales_count).toLocaleString(),
+              href: "/app/sales",
+            },
+          ]
+        : []),
+      ...(!salesRole && summary.inventory
+        ? [
+            {
+              icon: <PackageSearch aria-hidden="true" className="size-4" />,
+              label: "Low stock",
+              value: n(summary.kpis.low_stock).toLocaleString(),
+              href: "/app/inventory?status=LOW_STOCK",
+              tone: "warning" as const,
+            },
+            {
+              icon: <Truck aria-hidden="true" className="size-4" />,
+              label: "In transit",
+              value: n(summary.kpis.in_transit).toLocaleString(),
+              href: "/app/transfers?status=DISPATCHED",
+            },
+          ]
+        : []),
+    ];
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -108,20 +154,16 @@ export default async function DashboardPage({
         </div>
         <div className="flex gap-2">
           {context.permissions.includes("sales.create") ? (
-            <Link
-              className="min-h-10 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
-              href="/app/sales/new"
-            >
+            <ButtonLink href="/app/sales/new">
+              <ReceiptText aria-hidden="true" className="size-4" />
               New sale
-            </Link>
+            </ButtonLink>
           ) : null}
           {context.permissions.includes("purchases.create") ? (
-            <Link
-              className="min-h-10 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
-              href="/app/purchases/new"
-            >
+            <ButtonLink href="/app/purchases/new" variant="secondary">
+              <Truck aria-hidden="true" className="size-4" />
               New purchase
-            </Link>
+            </ButtonLink>
           ) : null}
         </div>
       </div>
@@ -174,6 +216,7 @@ export default async function DashboardPage({
           Apply filters
         </button>
       </form>
+      <DashboardTicker items={tickerItems} />
       {!inventoryRole ? (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard

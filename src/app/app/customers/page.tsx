@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserRoundPlus } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -36,7 +37,14 @@ export default async function Page({
           description="Company customer master and authorized-branch receivable balances."
         />
         {context.permissions.includes("customers.create") ? (
-          <ButtonLink href="/app/customers/new">Add customer</ButtonLink>
+          <ButtonLink
+            className="shrink-0 shadow-[0_8px_18px_rgb(0_0_0_/_0.14)] hover:-translate-y-px hover:shadow-[0_12px_24px_rgb(0_0_0_/_0.18)]"
+            href="/app/customers/new"
+            size="compact"
+          >
+            <UserRoundPlus aria-hidden="true" className="size-4" />
+            Add customer
+          </ButtonLink>
         ) : null}
       </div>
       <Card>

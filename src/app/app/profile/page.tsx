@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/page-header";
+import { ProfileForm } from "@/features/profile/profile-form";
 import { requireActiveProfile } from "@/lib/auth/authorization";
 export default async function ProfilePage() {
   const context = await requireActiveProfile();
@@ -7,10 +8,28 @@ export default async function ProfilePage() {
     <div className="space-y-6">
       <PageHeader
         title="My profile"
-        description="Your employee identity and current access configuration."
+        description="Update your contact details and review your current access configuration."
       />
       <Card>
-        <dl className="grid gap-5 sm:grid-cols-2">
+        <h2 className="text-lg font-bold">Personal details</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Keep your name and phone number current so the SAT-J team can reach
+          you.
+        </p>
+        <div className="mt-5">
+          <ProfileForm
+            fullName={context.profile.fullName}
+            phone={context.profile.phone}
+          />
+        </div>
+      </Card>
+      <Card>
+        <h2 className="text-lg font-bold">Access details</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Your email, role and branch access are managed by a Super Admin or
+          Owner.
+        </p>
+        <dl className="mt-5 grid gap-5 sm:grid-cols-2">
           <Item
             label="Name"
             value={context.profile.fullName || "Not provided"}

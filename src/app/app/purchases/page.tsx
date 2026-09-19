@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PackagePlus } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -41,7 +42,14 @@ export default async function Page({
           description="Orders, goods receipts, and supplier balances by authorized branch."
         />
         {context.permissions.includes("purchases.create") ? (
-          <ButtonLink href="/app/purchases/new">New purchase</ButtonLink>
+          <ButtonLink
+            className="shrink-0 shadow-[0_8px_18px_rgb(0_0_0_/_0.14)] hover:-translate-y-px hover:shadow-[0_12px_24px_rgb(0_0_0_/_0.18)]"
+            href="/app/purchases/new"
+            size="compact"
+          >
+            <PackagePlus aria-hidden="true" className="size-4" />
+            New purchase
+          </ButtonLink>
         ) : null}
       </div>
       <Card>

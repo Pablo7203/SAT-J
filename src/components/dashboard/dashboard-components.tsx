@@ -1,7 +1,72 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import { Activity, ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import { formatGhs } from "@/lib/format";
 import { comparison } from "@/lib/reporting";
+
+export type DashboardTickerItem = {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+  tone?: "default" | "warning" | "critical";
+};
+
+export function DashboardTicker({ items }: { items: DashboardTickerItem[] }) {
+  if (!items.length) return null;
+  return (
+    <section
+      aria-label="Operational pulse"
+      className="overflow-hidden rounded-[14px] border border-border bg-card"
+    >
+      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+        <Activity aria-hidden="true" className="size-4 text-primary" />
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Operational pulse
+        </p>
+      </div>
+      <div className="flex snap-x snap-mandatory overflow-x-auto px-2 py-2 [scrollbar-width:thin]">
+        {items.map((item) => {
+          const content = (
+            <div
+              className={`flex min-w-44 snap-start items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
+                item.tone === "critical"
+                  ? "text-destructive hover:bg-destructive/10"
+                  : item.tone === "warning"
+                    ? "text-warning hover:bg-warning/10"
+                    : "text-primary hover:bg-secondary"
+              }`}
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary">
+                {item.icon}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[12px] font-medium text-muted-foreground">
+                  {item.label}
+                </span>
+                <span className="block truncate text-base font-semibold tabular-nums text-foreground">
+                  {item.value}
+                </span>
+              </span>
+            </div>
+          );
+          return item.href ? (
+            <Link
+              className="shrink-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              href={item.href}
+              key={item.label}
+            >
+              {content}
+            </Link>
+          ) : (
+            <div className="shrink-0" key={item.label}>
+              {content}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 
 export function MetricCard({
   label,
@@ -30,7 +95,9 @@ export function MetricCard({
             )}
       </p>
       {context ? (
-        <p className="mt-1 text-xs leading-5 text-muted-foreground">{context}</p>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          {context}
+        </p>
       ) : null}
       {delta ? (
         <p className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
@@ -164,14 +231,18 @@ export function RankedBars({
 }) {
   const max = Math.max(1, ...rows.map((row) => row.value));
   if (!rows.length)
-    return <p className="text-sm text-muted-foreground">No data for this period.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">No data for this period.</p>
+    );
   return (
     <ol className="space-y-4">
       {rows.map((row, index) => (
         <li key={`${row.label}-${index}`}>
           <div className="mb-2 flex justify-between gap-3 text-sm text-muted-foreground">
             <span className="truncate">
-              <strong className="mr-2 text-muted-foreground">{index + 1}</strong>
+              <strong className="mr-2 text-muted-foreground">
+                {index + 1}
+              </strong>
               {row.href ? (
                 <Link className="hover:text-primary" href={row.href}>
                   {row.label}

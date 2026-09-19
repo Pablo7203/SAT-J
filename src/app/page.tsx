@@ -49,9 +49,17 @@ const journey = [
 ] as const;
 
 export default async function HomePage() {
-  const [config, categories, newArrivals, bestSellers, branches] = await Promise.all([
+  const [
+    config,
+    categories,
+    catalogueShowcase,
+    newArrivals,
+    bestSellers,
+    branches,
+  ] = await Promise.all([
     siteConfig(),
     publicCategories(),
+    publicCatalogue({ size: 10, sort: "recommended" }),
     publicCatalogue({ size: 4, sort: "newest" }),
     publicBestSellers(),
     publicBranches(),
@@ -75,8 +83,6 @@ export default async function HomePage() {
     ...(branch.email ? { email: branch.email } : {}),
     address: { "@type": "PostalAddress", streetAddress: branch.address },
   }));
-  const featureCategories = categories.slice(0, 4);
-
   return (
     <>
       <StructuredData
@@ -201,42 +207,22 @@ export default async function HomePage() {
           </p>
         </section>
 
-        {featureCategories.length ? (
+        {catalogueShowcase.items.length ? (
           <section className="mx-auto max-w-[1440px] px-4 pb-20 sm:px-6 lg:px-10 lg:pb-28">
-            <div className="grid gap-x-4 gap-y-10 md:grid-cols-12">
-              {featureCategories.map((category, index) => (
-                <Link
-                  className={`group block ${index === 0 || index === 3 ? "md:col-span-7" : "md:col-span-5"}`}
-                  href={`/categories/${category.slug}`}
-                  key={category.id}
-                >
-                  <div
-                    className={`relative overflow-hidden rounded-xl bg-[#ded6c8] ${index === 0 || index === 3 ? "aspect-[1.45/1]" : "aspect-[1.05/1]"}`}
-                  >
-                    {category.image_url ? (
-                      <img
-                        alt=""
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
-                        src={category.image_url}
-                      />
-                    ) : null}
-                  </div>
-                  <div className="mt-4 flex items-start justify-between gap-5">
-                    <div>
-                      <h3 className="text-2xl font-semibold tracking-[-0.035em]">
-                        {category.name}
-                      </h3>
-                      {category.description ? (
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-[#6d695f]">
-                          {category.description}
-                        </p>
-                      ) : null}
-                    </div>
-                    <span className="mt-1 rounded-full border border-[#1d1e19]/15 p-2 text-[#28372c] transition-colors group-hover:border-[#28372c]">
-                      <ArrowRight aria-hidden="true" size={16} />
-                    </span>
-                  </div>
-                </Link>
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <h2 className="public-editorial-title text-3xl tracking-[-0.04em] sm:text-4xl">
+                Explore the catalogue.
+              </h2>
+              <Link
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#28372c] hover:text-[#1d1e19]"
+                href="/products"
+              >
+                View all products <ArrowRight size={16} />
+              </Link>
+            </div>
+            <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 lg:grid-cols-5">
+              {catalogueShowcase.items.map((product) => (
+                <ProductCard key={product.slug} product={product} />
               ))}
             </div>
           </section>
@@ -255,10 +241,20 @@ export default async function HomePage() {
             </div>
             <div className="flex min-h-[270px] flex-col justify-between rounded-xl bg-[#28372c] p-7 text-[#f8f5ef] md:col-span-5 md:min-h-[540px] md:p-10">
               <div>
-                <h2 className="public-editorial-title text-4xl leading-[1.04] tracking-[-0.045em] sm:text-5xl">Spaces made with considered materials.</h2>
-                <p className="mt-5 max-w-md text-sm leading-7 text-[#f8f5ef]/76">From first finish to final fitting, explore ideas for rooms that feel practical, personal and complete.</p>
+                <h2 className="public-editorial-title text-4xl leading-[1.04] tracking-[-0.045em] sm:text-5xl">
+                  Spaces made with considered materials.
+                </h2>
+                <p className="mt-5 max-w-md text-sm leading-7 text-[#f8f5ef]/76">
+                  From first finish to final fitting, explore ideas for rooms
+                  that feel practical, personal and complete.
+                </p>
               </div>
-              <Link className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-[#f8f5ef] hover:text-[#e7ded0]" href="/products">Explore materials <ArrowRight aria-hidden="true" size={16} /></Link>
+              <Link
+                className="mt-10 inline-flex items-center gap-2 text-sm font-semibold text-[#f8f5ef] hover:text-[#e7ded0]"
+                href="/products"
+              >
+                Explore materials <ArrowRight aria-hidden="true" size={16} />
+              </Link>
             </div>
           </div>
         </section>
@@ -313,9 +309,9 @@ export default async function HomePage() {
             </Link>
           </div>
           {newArrivals.items.length ? (
-            <div className="mt-10 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
               {newArrivals.items.map((product) => (
-                <ProductCard product={product} key={product.slug} />
+                <ProductCard compact product={product} key={product.slug} />
               ))}
             </div>
           ) : (
@@ -329,10 +325,16 @@ export default async function HomePage() {
         {bestSellers.length ? (
           <section className="border-y border-[#1d1e19]/10 bg-[#f8f5ef] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
             <div className="mx-auto max-w-[1440px]">
-              <h2 className="public-editorial-title text-4xl tracking-[-0.045em] sm:text-5xl">Best selling materials.</h2>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-[#6d695f]">Popular products based on completed SAT-J sales.</p>
+              <h2 className="public-editorial-title text-4xl tracking-[-0.045em] sm:text-5xl">
+                Best selling materials.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#6d695f]">
+                Popular products based on completed SAT-J sales.
+              </p>
               <div className="mt-10 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-                {bestSellers.map((product) => <ProductCard product={product} key={product.slug} />)}
+                {bestSellers.map((product) => (
+                  <ProductCard product={product} key={product.slug} />
+                ))}
               </div>
             </div>
           </section>
