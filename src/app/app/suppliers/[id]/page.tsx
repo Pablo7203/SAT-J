@@ -47,14 +47,19 @@ export default async function Page({
   if (!supplier) notFound();
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <PageHeader
+          backHref="/app/suppliers"
           title={`${supplier.supplier_code} · ${supplier.name}`}
           description={`${supplier.is_active ? "Active" : "Archived"} supplier · Outstanding ${formatGhs(balance?.outstanding_balance ?? 0)}`}
         />
         <div className="flex gap-2">
           {context.permissions.includes("suppliers.update") ? (
-            <ButtonLink href={`/app/suppliers/${id}/edit`} variant="secondary">
+            <ButtonLink
+              href={`/app/suppliers/${id}/edit`}
+              size="compact"
+              variant="secondary"
+            >
               Edit
             </ButtonLink>
           ) : null}

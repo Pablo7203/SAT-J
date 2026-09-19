@@ -17,21 +17,33 @@ export default async function Page({
     page = Math.max(1, Number(q.page) || 1),
     size = 25,
     s = await createClient();
-  let request = s
-    .from("suppliers")
-    .select("*,supplier_balances(outstanding_balance)", { count: "exact" });
+  let request = s.from("suppliers").select("*", { count: "exact" });
   if (q.q)
     request = request.or(
       `name.ilike.%${q.q}%,supplier_code.ilike.%${q.q}%,phone.ilike.%${q.q}%,email.ilike.%${q.q}%`,
     );
   if (q.status) request = request.eq("is_active", q.status === "active");
-  const { data, count } = await request
-    .order("name")
-    .range((page - 1) * size, page * size - 1);
+  const [{ data, count, error }, { data: balances, error: balancesError }] =
+    await Promise.all([
+      request.order("name").range((page - 1) * size, page * size - 1),
+      s.from("supplier_balances").select("supplier_id,outstanding_balance"),
+    ]);
+  if (error) throw new Error(`Unable to load suppliers: ${error.message}`);
+  if (balancesError)
+    throw new Error(
+      `Unable to load supplier balances: ${balancesError.message}`,
+    );
+  const balanceBySupplier = new Map(
+    (balances ?? []).map((balance) => [
+      balance.supplier_id,
+      Number(balance.outstanding_balance ?? 0),
+    ]),
+  );
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-3">
         <PageHeader
+          backHref="/app/dashboard"
           title="Suppliers"
           description="Supplier master data and outstanding purchasing balances."
         />
@@ -77,15 +89,8 @@ export default async function Page({
               <span>{x.contact_person || x.company_name || "—"}</span>
               <span>{x.phone || "—"}</span>
               <span>
-                {formatGhs(
-                  Number(
-                    (
-                      x.supplier_balances as unknown as
-                        { outstanding_balance: number }[] | null
-                    )?.[0]?.outstanding_balance ?? 0,
-                  ),
-                )}{" "}
-                · {x.is_active ? "Active" : "Archived"}
+                {formatGhs(balanceBySupplier.get(x.id) ?? 0)} ·{" "}
+                {x.is_active ? "Active" : "Archived"}
               </span>
             </Card>
           </Link>

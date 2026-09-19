@@ -16,7 +16,10 @@ export default async function Page({
   if (!data) notFound();
   return (
     <div className="space-y-6">
-      <PageHeader title={`Edit ${data.name}`} />
+      <PageHeader
+        backHref={`/app/suppliers/${id}`}
+        title={`Edit ${data.name}`}
+      />
       <Card>
         <SupplierForm supplier={data} />
       </Card>

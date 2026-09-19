@@ -45,7 +45,10 @@ export async function saveSupplier(
     ? await s.rpc("update_supplier", { target_supplier: id, ...args })
     : await s.rpc("create_supplier", args);
   if (result.error) return { error: message(result.error.message) };
-  redirect(`/app/suppliers/${id || result.data}`);
+  const supplierId = id || result.data;
+  revalidatePath("/app/suppliers");
+  revalidatePath(`/app/suppliers/${supplierId}`);
+  redirect(`/app/suppliers/${supplierId}`);
 }
 export async function toggleSupplier(data: FormData) {
   await requirePermission("suppliers.archive");

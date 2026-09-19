@@ -7,6 +7,7 @@ export default async function Page() {
   return (
     <div className="space-y-6">
       <PageHeader
+        backHref="/app/suppliers"
         title="Add supplier"
         description="Create a reusable supplier record. Similar names are allowed and are never silently merged."
       />
