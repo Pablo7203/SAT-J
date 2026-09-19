@@ -1,5 +1,6 @@
 "use client";
-import { useActionState } from "react";
+import { ImageUp } from "lucide-react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,8 +116,16 @@ export function ProductForm({
       </Select>
       <Field name="sku" label="SKU" required />
       <Field name="barcode" label="Barcode (optional)" />
-      <Field name="size" label="Size (optional)" placeholder="e.g. 60 × 60 cm" />
-      <Field name="colour" label="Colour (optional)" placeholder="e.g. Warm white" />
+      <Field
+        name="size"
+        label="Size (optional)"
+        placeholder="e.g. 60 × 60 cm"
+      />
+      <Field
+        name="colour"
+        label="Colour (optional)"
+        placeholder="e.g. Warm white"
+      />
       <Field name="retailPrice" label="Retail price (GHS)" type="number" />
       <Field
         name="wholesalePrice"
@@ -192,22 +201,41 @@ export function ReferenceForm({
 
 export function ProductImageForm({ productId }: { productId: string }) {
   const [state, action, pending] = useActionState(uploadProductImage, initial);
+  const [fileName, setFileName] = useState<string | null>(null);
   return (
     <form action={action} className="grid gap-3 sm:grid-cols-2">
       <input type="hidden" name="productId" value={productId} />
-      <Label>
-        Image
+      <div>
+        <p className="text-sm font-semibold">Image</p>
+        <label
+          className="mt-1 flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-primary/45 bg-secondary/75 px-4 text-center transition-colors hover:border-primary hover:bg-secondary focus-within:outline-3 focus-within:outline-focus focus-within:outline-offset-3"
+          htmlFor="product-image"
+        >
+          <ImageUp aria-hidden="true" className="size-6 text-primary" />
+          <span className="mt-2 text-sm font-semibold text-foreground">
+            {fileName ?? "Choose a product image"}
+          </span>
+          <span className="mt-1 text-xs text-muted-foreground">
+            JPG, PNG, WebP or AVIF, up to 5 MB
+          </span>
+        </label>
         <input
-          className="mt-1 block w-full text-sm"
+          className="sr-only"
+          id="product-image"
           name="image"
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif"
+          accept="image/jpeg,image/png,image/webp,image/avif,.jpg,.jpeg,.png,.webp,.avif"
+          disabled={pending}
+          onChange={(event) =>
+            setFileName(event.currentTarget.files?.[0]?.name ?? null)
+          }
           required
         />
-      </Label>
+      </div>
       <Field name="altText" label="Alternative text" />
       <label className="flex items-center gap-2">
-        <input type="checkbox" name="isPrimary" defaultChecked /> Primary product image
+        <input type="checkbox" name="isPrimary" defaultChecked /> Primary
+        product image
       </label>
       <div className="sm:col-span-2">
         {state.message ? (

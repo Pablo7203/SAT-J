@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { LoaderCircle } from "lucide-react";
+import { useFormStatus } from "react-dom";
 import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
@@ -18,13 +22,24 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export function Button({
   className = "",
   variant = "primary",
+  children,
+  disabled,
   ...props
 }: ButtonProps) {
+  const { pending } = useFormStatus();
+  const isWorking = pending && props.type !== "button";
   return (
     <button
       className={`${base} ${variants[variant]} ${className}`}
+      disabled={disabled || isWorking}
+      aria-busy={isWorking || undefined}
       {...props}
-    />
+    >
+      {isWorking ? (
+        <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
+      ) : null}
+      {children}
+    </button>
   );
 }
 type ButtonLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {

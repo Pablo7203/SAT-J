@@ -65,7 +65,7 @@ export type PublicProduct = {
   }[];
   variants: PublicVariant[];
   availability: string;
-  related: { slug: string; name: string }[];
+  related: PublicProductCard[];
 };
 export type Catalogue = { total: number; items: PublicProductCard[] };
 export type PublicAttributeFilter = {
@@ -110,9 +110,9 @@ export async function publicBranches() {
   return (data ?? []) as PublicBranch[];
 }
 export async function publicQuoteProducts() {
-  const { data, error } = await (await createClient()).rpc(
-    "public_quote_products",
-  );
+  const { data, error } = await (
+    await createClient()
+  ).rpc("public_quote_products");
   if (error) throw error;
   return (data ?? []) as { id: string; name: string; category: string }[];
 }
@@ -162,10 +162,9 @@ export async function publicCatalogue(
   return result;
 }
 export async function publicBestSellers(size = 4) {
-  const { data, error } = await (await createClient()).rpc(
-    "public_best_sellers",
-    { item_limit: size },
-  );
+  const { data, error } = await (
+    await createClient()
+  ).rpc("public_best_sellers", { item_limit: size });
   if (error) throw error;
   return Promise.all(
     ((data ?? []) as PublicProductCard[]).map(async (product) => ({
@@ -183,6 +182,12 @@ export async function publicProduct(slug: string) {
   const product = data as unknown as PublicProduct;
   product.images = await Promise.all(
     product.images.map(async (i) => ({ ...i, url: await sign(i.path) })),
+  );
+  product.related = await Promise.all(
+    product.related.map(async (related) => ({
+      ...related,
+      image_url: await sign(related.image_path),
+    })),
   );
   return product;
 }

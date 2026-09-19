@@ -33,6 +33,8 @@ select ok(public.public_product('draft-tile') is null,'Draft direct slug is hidd
 select is(public.public_product('visible-tile')->'variants'->0->>'price','180.00','Approved retail price is exposed');
 select ok((public.public_product('hidden-price-tile')->'variants'->0->'price')='null'::jsonb,'Hidden numeric price is not returned');
 select is(public.public_product('visible-tile')->>'availability','Available','Positive healthy stock becomes Available');
+select ok(public.public_product('visible-tile')->'related'->0 ? 'image_path','Related products expose a public product-card image path');
+select ok(public.public_product('visible-tile')->'related'->0 ? 'price','Related products expose the public-safe price field');
 select is(public.public_product('hidden-price-tile')->>'availability','Limited availability','Low positive stock becomes limited without quantity');
 select is(public.public_product('unavailable-tile')->>'availability','Currently unavailable','Zero stock becomes unavailable without quantity');
 select is(jsonb_array_length(public.public_branches()),1,'Only public active branch is exposed');

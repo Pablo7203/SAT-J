@@ -219,7 +219,9 @@ export async function updateCategory(data: FormData) {
   if (!id.success || !parsed.success) return;
   const category = parsed.data;
   if (category.parentId === id.data) return;
-  const { error } = await (await createClient())
+  const { error } = await (
+    await createClient()
+  )
     .from("categories")
     .update({
       name: category.name,
@@ -249,12 +251,34 @@ export async function deleteProduct(data: FormData) {
   redirect("/app/products");
 }
 
-const imageTypes = new Map([
-  ["image/jpeg", "jpg"],
-  ["image/png", "png"],
-  ["image/webp", "webp"],
-  ["image/avif", "avif"],
-]);
+const supportedImageTypes = {
+  jpeg: { extension: "jpg", mime: "image/jpeg" },
+  png: { extension: "png", mime: "image/png" },
+  webp: { extension: "webp", mime: "image/webp" },
+  avif: { extension: "avif", mime: "image/avif" },
+} as const;
+
+async function detectImageType(file: File) {
+  const bytes = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const ascii = (from: number, to: number) =>
+    String.fromCharCode(...bytes.slice(from, to));
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff)
+    return supportedImageTypes.jpeg;
+  if (
+    bytes[0] === 0x89 &&
+    ascii(1, 4) === "PNG" &&
+    bytes[4] === 0x0d &&
+    bytes[5] === 0x0a &&
+    bytes[6] === 0x1a &&
+    bytes[7] === 0x0a
+  )
+    return supportedImageTypes.png;
+  if (ascii(0, 4) === "RIFF" && ascii(8, 12) === "WEBP")
+    return supportedImageTypes.webp;
+  if (ascii(4, 8) === "ftyp" && ["avif", "avis"].includes(ascii(8, 12)))
+    return supportedImageTypes.avif;
+  return null;
+}
 export async function uploadProductImage(
   _state: CatalogActionState,
   data: FormData,
@@ -264,14 +288,14 @@ export async function uploadProductImage(
   const file = data.get("image");
   if (!productId.success || !(file instanceof File))
     return fail("Choose an image.");
-  const extension = imageTypes.get(file.type);
-  if (!extension || file.size > 5 * 1024 * 1024)
+  const imageType = await detectImageType(file);
+  if (!imageType || file.size > 5 * 1024 * 1024)
     return fail("Use a JPG, PNG, WebP, or AVIF image up to 5 MB.");
   const s = await createClient();
-  const path = `products/${productId.data}/${crypto.randomUUID()}.${extension}`;
+  const path = `products/${productId.data}/${crypto.randomUUID()}.${imageType.extension}`;
   const { error: uploadError } = await s.storage
     .from("product-images")
-    .upload(path, file, { contentType: file.type, upsert: false });
+    .upload(path, file, { contentType: imageType.mime, upsert: false });
   if (uploadError) return fail(messageFor(uploadError));
   if (data.get("isPrimary") === "on") {
     const { error: primaryError } = await s

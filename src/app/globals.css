@@ -7,6 +7,14 @@
   font-weight: 400;
 }
 
+.staff-login input:-webkit-autofill,
+.staff-login input:-webkit-autofill:hover,
+.staff-login input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1d1e19;
+  -webkit-box-shadow: 0 0 0 1000px #fffdf9 inset;
+  box-shadow: 0 0 0 1000px #fffdf9 inset;
+}
+
 .internal-app {
   --surface: #1c201d;
   --primary: #73907a;
